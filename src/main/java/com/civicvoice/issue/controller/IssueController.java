@@ -62,13 +62,13 @@ public class IssueController {
                description = "Filter by city, status, category, ward. Paginated.")
     @GetMapping
     public ResponseEntity<Page<IssueResponse>> listIssues(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) IssueStatus status,
-            @RequestParam(required = false) IssueCategory category,
-            @RequestParam(required = false) String ward,
-            @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy) {
+            @RequestParam(name = "city", required = false) String city,
+            @RequestParam(name = "status", required = false) IssueStatus status,
+            @RequestParam(name = "category", required = false) IssueCategory category,
+            @RequestParam(name = "ward", required = false) String ward,
+            @RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
+            @RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(name = "sortBy", defaultValue = "createdAt") String sortBy) {
 
         return ResponseEntity.ok(issueService.listIssues(city, status, category, ward, page, size, sortBy));
     }
@@ -87,9 +87,9 @@ public class IssueController {
                description = "Returns issues within the specified radius (km). Max 50 km.")
     @GetMapping("/nearby")
     public ResponseEntity<List<IssueResponse>> getNearby(
-            @RequestParam @DecimalMin("-90.0") @DecimalMax("90.0") double lat,
-            @RequestParam @DecimalMin("-180.0") @DecimalMax("180.0") double lng,
-            @RequestParam(defaultValue = "1.0") @DecimalMin("0.1") @DecimalMax("50.0") double radiusKm) {
+            @RequestParam(name = "lat") @DecimalMin("-90.0") @DecimalMax("90.0") double lat,
+            @RequestParam(name = "lng") @DecimalMin("-180.0") @DecimalMax("180.0") double lng,
+            @RequestParam(name = "radiusKm", defaultValue = "10.0") @Min(1) @Max(50) double radiusKm) {
 
         return ResponseEntity.ok(issueService.getNearby(lat, lng, radiusKm));
     }

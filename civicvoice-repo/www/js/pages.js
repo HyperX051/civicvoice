@@ -181,6 +181,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
 
   app.innerHTML = `
     <div class="app-layout">
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <div class="sidebar-logo">${icons.shield}</div>
@@ -249,6 +250,8 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
   // Navigation handlers
   document.querySelectorAll('[data-nav]').forEach(item => {
     item.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay')?.classList.remove('open');
       router.navigate(item.dataset.nav);
     });
   });
@@ -276,9 +279,17 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
 
   // Mobile menu
   const mobileBtn = document.getElementById('mobile-menu-btn');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
   if (mobileBtn) {
     mobileBtn.addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('open');
+      if (sidebarOverlay) sidebarOverlay.classList.toggle('open');
+    });
+  }
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      sidebarOverlay.classList.remove('open');
     });
   }
 
@@ -722,71 +733,76 @@ function showReportIssueModal(onSuccess) {
   // ── Location: GPS + OpenStreetMap reverse geocoding ──
   const locationBtn = document.getElementById('get-location-btn');
 
-  locationBtn.addEventListener('click', () => {
-    if (!navigator.geolocation) {
-      statusEl.style.display = 'block';
-      statusEl.textContent = '❌ Geolocation not supported by this browser.';
-      return;
-    }
+  locationBtn.addEventListener('click', async () => {
     locationBtn.textContent = '⏳ Getting GPS location...';
     locationBtn.disabled = true;
     statusEl.style.display = 'block';
     statusEl.textContent = 'Requesting location from your device...';
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        capturedLat = pos.coords.latitude;
-        capturedLng = pos.coords.longitude;
-        statusEl.textContent = `📡 Got coordinates (${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)}) — fetching address...`;
-        if (reportMapMarker) reportMap.removeLayer(reportMapMarker);
-        reportMapMarker = L.marker([capturedLat, capturedLng]).addTo(reportMap);
-        reportMap.setView([capturedLat, capturedLng], 15);
+    try {
+      let lat, lng;
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        const { Geolocation } = window.Capacitor.Plugins;
+        const pos = await Geolocation.getCurrentPosition();
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+      } else {
+        if (!navigator.geolocation) throw new Error('Geolocation not supported by this browser.');
+        const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej));
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+      }
 
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${capturedLat}&lon=${capturedLng}&format=json&addressdetails=1`,
-            { headers: { 'Accept-Language': 'en', 'User-Agent': 'CivicVoiceApp/1.0' } }
-          );
-          const geo = await res.json();
-          const addr = geo.address || {};
+      capturedLat = lat;
+      capturedLng = lng;
+      statusEl.textContent = `📡 Got coordinates (${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)}) — fetching address...`;
+      if (reportMapMarker) reportMap.removeLayer(reportMapMarker);
+      reportMapMarker = L.marker([capturedLat, capturedLng]).addTo(reportMap);
+      reportMap.setView([capturedLat, capturedLng], 15);
 
-          const road = addr.road || addr.pedestrian || addr.path || '';
-          const suburb = addr.suburb || addr.neighbourhood || addr.quarter || addr.village || '';
-          
-          let parsedCity = addr.city || addr.town || addr.municipality || addr.county || addr.state_district || addr.district || addr.village;
-          if (!parsedCity && geo.display_name) {
-             const parts = geo.display_name.split(',').map(s => s.trim());
-             if (parts.length >= 3) {
-                 parsedCity = parts[parts.length - 4] || parts[1]; // Often 4th from end is district, or 2nd item
-             }
-          }
-          const city = parsedCity || 'Bangalore';
-          const pincode = addr.postcode || '';
-          const ward = addr.suburb || addr.quarter || suburb || '';
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${capturedLat}&lon=${capturedLng}&format=json&addressdetails=1`,
+        { headers: { 'Accept-Language': 'en', 'User-Agent': 'CivicVoiceApp/1.0' } }
+      );
+      const geo = await res.json();
+      const addr = geo.address || {};
 
-          if (road || suburb) document.getElementById('issue-address').value = [road, suburb].filter(Boolean).join(', ');
-          document.getElementById('issue-city').value = city;
-          if (pincode) document.getElementById('issue-pincode').value = pincode;
-          if (ward) document.getElementById('issue-ward').value = ward;
+      const road = addr.road || addr.pedestrian || addr.path || '';
+      const suburb = addr.suburb || addr.neighbourhood || addr.quarter || addr.village || '';
+      
+      let parsedCity = addr.city || addr.town || addr.municipality || addr.county || addr.state_district || addr.district || addr.village;
+      if (!parsedCity && geo.display_name) {
+         const parts = geo.display_name.split(',').map(s => s.trim());
+         if (parts.length >= 3) {
+             parsedCity = parts[parts.length - 4] || parts[1];
+         }
+      }
+      const city = parsedCity || 'Bangalore';
+      const pincode = addr.postcode || '';
+      const ward = addr.suburb || addr.quarter || suburb || '';
 
-          locationBtn.textContent = '✅ Location Detected';
-          statusEl.innerHTML = `✅ <strong>${geo.display_name || `${capturedLat.toFixed(4)}, ${capturedLng.toFixed(4)}`}</strong>`;
-        } catch {
-          locationBtn.textContent = '✅ Coordinates Captured';
-          statusEl.textContent = `✅ Coordinates saved (${capturedLat.toFixed(4)}, ${capturedLng.toFixed(4)}). Please fill the address fields manually.`;
-        }
-      },
-      (err) => {
-        locationBtn.textContent = '📍 Auto-detect My Location';
-        locationBtn.disabled = false;
-        statusEl.style.display = 'block';
-        const msg = err.code === 1 ? 'Permission denied — please allow location access in your browser.' :
-                    err.code === 2 ? 'Location unavailable. Enter address manually.' :
-                    'Location request timed out. Enter address manually.';
-        statusEl.textContent = '❌ ' + msg;
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
+      if (road || suburb) document.getElementById('issue-address').value = [road, suburb].filter(Boolean).join(', ');
+      document.getElementById('issue-city').value = city;
+      if (pincode) document.getElementById('issue-pincode').value = pincode;
+      if (ward) document.getElementById('issue-ward').value = ward;
+
+      locationBtn.textContent = '✅ Location Detected';
+      statusEl.innerHTML = `✅ <strong>${geo.display_name || `${capturedLat.toFixed(4)}, ${capturedLng.toFixed(4)}`}</strong>`;
+    } catch (err) {
+      statusEl.style.display = 'block';
+      if (capturedLat && capturedLng) {
+         locationBtn.textContent = '✅ Coordinates Captured';
+         statusEl.textContent = `✅ Coordinates saved (${capturedLat.toFixed(4)}, ${capturedLng.toFixed(4)}). Please fill the address fields manually.`;
+      } else {
+         locationBtn.textContent = '📍 Auto-detect My Location';
+         const msg = err.code === 1 ? 'Permission denied — please allow location access.' :
+                     err.code === 2 ? 'Location unavailable. Enter address manually.' :
+                     'Failed to get location. Enter address manually.';
+         statusEl.textContent = `❌ ${msg}`;
+      }
+    } finally {
+      locationBtn.disabled = false;
+    }
   });
 
   // ── Image Upload: drag-and-drop + preview ──
@@ -1017,7 +1033,7 @@ export function renderIssueDetailContent(el, router, issueId) {
       const mediaHtml = (issue.mediaUrls || issue.media || []).map(m => {
         let url = m.url || m;
         if (url.startsWith('/')) {
-            url = 'http://192.168.1.36:8080' + url;
+            url = API_BASE_URL.replace('/api/v1', '') + url;
         }
         if (url.endsWith('.mp4')) {
           return `<video src="${url}" controls style="max-width: 100%; border-radius: var(--radius-md); margin-top: 12px;"></video>`;
@@ -1515,23 +1531,25 @@ export async function renderDashboardContent(el, router) {
       return;
     }
     tableEl.innerHTML = `
-      <table class="manage-issues-table">
-        <thead><tr><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Reported</th><th></th></tr></thead>
-        <tbody>
-          ${recentIssues.map(issue => `
-            <tr>
-              <td><div class="font-medium text-sm" style="max-width:250px">${issue.title}</div></td>
-              <td><span class="issue-card-category">${formatCategory(issue.category)}</span></td>
-              <td><span class="badge badge-priority-${(issue.priority||'MEDIUM').toLowerCase()}">${issue.priority||'MEDIUM'}</span></td>
-              <td><span class="badge badge-status-${statusClass(issue.status)}">${issue.status.replace(/_/g,' ')}</span></td>
-              <td class="text-sm text-muted">${timeAgo(issue.createdAt)}</td>
-              <td>
-                <button class="btn btn-ghost btn-sm view-issue-btn" data-id="${issue.id}" title="View">${icons.eye}</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
+      <div style="overflow-x: auto; width: 100%;">
+        <table class="manage-issues-table" style="min-width: 600px;">
+          <thead><tr><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Reported</th><th></th></tr></thead>
+          <tbody>
+            ${recentIssues.map(issue => `
+              <tr>
+                <td><div class="font-medium text-sm" style="max-width:250px">${issue.title}</div></td>
+                <td><span class="issue-card-category">${formatCategory(issue.category)}</span></td>
+                <td><span class="badge badge-priority-${(issue.priority||'MEDIUM').toLowerCase()}">${issue.priority||'MEDIUM'}</span></td>
+                <td><span class="badge badge-status-${statusClass(issue.status)}">${issue.status.replace(/_/g,' ')}</span></td>
+                <td class="text-sm text-muted">${timeAgo(issue.createdAt)}</td>
+                <td>
+                  <button class="btn btn-ghost btn-sm view-issue-btn" data-id="${issue.id}" title="View">${icons.eye}</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
     `;
 
     document.querySelectorAll('#recent-issues-table .view-issue-btn').forEach(btn => {
