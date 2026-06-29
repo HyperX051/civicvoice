@@ -1025,8 +1025,14 @@ export function renderIssueDetailContent(el, router, issueId) {
     try {
       const issue = await fetchWithAuth('/issues/' + issueId);
       
-      // Support missing comments/upvotes in response structure gracefully
-      const comments = issue.comments || [];
+      let comments = [];
+      try {
+        const commentsResponse = await fetchWithAuth(`/issues/${issueId}/comments`);
+        comments = commentsResponse.content || [];
+      } catch (err) {
+        console.warn('Failed to load comments:', err);
+      }
+      
       const upvoteCount = issue.upvoteCount || 0;
       const commentCount = issue.commentCount || comments.length;
       
