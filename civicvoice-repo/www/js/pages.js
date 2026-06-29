@@ -20,7 +20,7 @@ export function renderLoginPage(app, router, defaultEmail = '') {
     <div class="auth-page">
       <div class="auth-container">
         <div class="auth-logo">
-          <div class="auth-logo-icon">${icons.shield}</div>
+          <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
           <h1>CivicVoice</h1>
           <p>Empowering Citizens, Transforming Governance</p>
         </div>
@@ -81,7 +81,7 @@ export function renderRegisterPage(app, router) {
     <div class="auth-page">
       <div class="auth-container">
         <div class="auth-logo">
-          <div class="auth-logo-icon">${icons.shield}</div>
+          <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
           <h1>CivicVoice</h1>
           <p>Join the civic engagement movement</p>
         </div>
@@ -184,7 +184,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
       <div class="sidebar-overlay" id="sidebar-overlay"></div>
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <div class="sidebar-logo">${icons.shield}</div>
+          <div class="sidebar-logo"><img src="img/logo.png" style="width: 32px; height: 32px; border-radius: 8px;" alt="Logo" /></div>
           <span class="sidebar-brand">CivicVoice</span>
         </div>
         <nav class="sidebar-nav">
