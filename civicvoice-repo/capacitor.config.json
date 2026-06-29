@@ -1,0 +1,9 @@
+{
+  "appId": "com.civicvoice.app",
+  "appName": "CivicVoice",
+  "webDir": "www",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
+}
