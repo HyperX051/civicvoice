@@ -271,7 +271,7 @@ public class CivicVoiceDemoTest {
 
         // Verify audit log and notification triggers
         verify(auditService, times(1)).log(eq("SLA_BREACHED"), eq("ISSUE"), eq(breachedIssueId), eq(false), eq(true), any());
-        verify(notificationService, times(1)).notifySlaBreach(breachedIssue);
+        verify(notificationService, times(1)).notifySlaBreach(breachedIssueId);
 
         System.out.println("1. Scan completed. Found 1 overdue issue.");
         System.out.println("   Issue \"" + breachedIssue.getTitle() + "\" is marked as SLA Breached.");
