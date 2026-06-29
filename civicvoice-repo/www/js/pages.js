@@ -1132,7 +1132,7 @@ export function renderIssueDetailContent(el, router, issueId) {
                     ${c.isOfficial ? '<span class="badge badge-role-authority">Official</span>' : ''}
                     <span class="comment-time">${timeAgo(c.createdAt || new Date().toISOString())}</span>
                   </div>
-                  <p class="comment-text">${c.text}</p>
+                  <p class="comment-text">${c.content || ''}</p>
                 </div>
               </div>
             `).join('')}
