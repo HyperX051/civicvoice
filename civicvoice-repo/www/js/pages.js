@@ -888,8 +888,13 @@ function showReportIssueModal(onSuccess) {
         });
         if (!uploadRes.ok) throw new Error(`Upload error: ${uploadRes.status}`);
         const uploadData = await uploadRes.json();
-        mediaUrls = (uploadData.files || []).map(f => f.url).filter(Boolean);
-        if (!mediaUrls.length && uploadData.url) mediaUrls = [uploadData.url];
+        // The backend returns an array of string URLs: ["/uploads/...", "/uploads/..."]
+        if (Array.isArray(uploadData)) {
+          mediaUrls = uploadData;
+        } else {
+          mediaUrls = (uploadData.files || []).map(f => f.url).filter(Boolean);
+          if (!mediaUrls.length && uploadData.url) mediaUrls = [uploadData.url];
+        }
         uploadStatus.textContent = `✅ ${mediaUrls.length} file(s) uploaded.`;
       } catch (uploadErr) {
         showToast('Image upload failed — submitting without images.', 'warning');
@@ -1175,7 +1180,7 @@ export function renderIssueDetailContent(el, router, issueId) {
         try {
           await fetchWithAuth(`/issues/${issueId}/comments`, {
             method: 'POST',
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ content: text })
           });
           showToast('Comment posted!', 'success');
           loadIssue(); // reload to show new comment
@@ -1207,9 +1212,8 @@ export function renderPollsContent(el, router) {
   async function loadPolls() {
     el.innerHTML = `<div class="empty-state"><div class="spinner"></div><h3>Loading polls...</h3></div>`;
     try {
-      // Use /polls for citizens (public), /polls/all for authority/admin
-      const role = auth.getRole();
-      const endpoint = (role === 'AUTHORITY' || role === 'ADMIN') ? '/polls/all?size=50' : '/polls?size=50';
+      // Use /polls/all for everyone so citizens can see closed polls too
+      const endpoint = '/polls/all?size=50';
       const response = await fetchWithAuth(endpoint);
       polls = response.content || [];
       render();
