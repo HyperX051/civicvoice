@@ -22,7 +22,6 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
           lob:
@@ -61,6 +60,7 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
+    check-template-location: false
 
   task:
     execution:
