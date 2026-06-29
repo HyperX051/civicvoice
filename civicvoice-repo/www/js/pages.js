@@ -9,7 +9,7 @@ import {
   formatCategory, statusClass, openGoogleMaps, showModal, hideModal,
   animateCount,
 } from './utils.js';
-import { fetchWithAuth } from './api.js';
+import { fetchWithAuth, API_BASE_URL } from './api.js';
 
 
 // ─────────────────────────────────────────────
@@ -865,7 +865,7 @@ function showReportIssueModal(onSuccess) {
         selectedFiles.forEach(f => formData.append('files', f));
         const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
         const headers = authData.token ? { 'Authorization': `Bearer ${authData.token}` } : {};
-        const uploadRes = await fetch('http://192.168.1.36:8080/api/v1/upload/multiple', {
+        const uploadRes = await fetch(`${API_BASE_URL}/upload/multiple`, {
           method: 'POST',
           headers: headers,
           body: formData,

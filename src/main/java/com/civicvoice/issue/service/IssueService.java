@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.*;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 @RequiredArgsConstructor
@@ -157,16 +158,21 @@ public class IssueService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
         User current = currentUserOrNull();
 
-        Page<Issue> issues;
-        if (status != null && city != null) {
-            issues = issueRepository.findByCityAndStatus(city, status, pageable);
-        } else if (city != null) {
-            issues = issueRepository.findByCity(city, pageable);
-        } else if (ward != null) {
-            issues = issueRepository.findByWard(ward, pageable);
-        } else {
-            issues = issueRepository.findAll(pageable);
+        Specification<Issue> spec = Specification.where(null);
+        if (city != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("city"), city));
         }
+        if (status != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
+        }
+        if (category != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("category"), category));
+        }
+        if (ward != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("ward"), ward));
+        }
+
+        Page<Issue> issues = issueRepository.findAll(spec, pageable);
 
         return issues.map(i -> mapToResponse(i, current));
     }
