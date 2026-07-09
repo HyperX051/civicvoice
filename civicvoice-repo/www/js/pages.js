@@ -2351,15 +2351,25 @@ export function renderProfileContent(el, router) {
   const user = auth.user;
   
   el.innerHTML = `
-    <div class="profile-page" style="background: var(--bg-primary); min-height: 100vh;">
-      <!-- Avatar Section -->
-      <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 16px 24px; background: var(--bg-secondary);">
-        <div class="profile-avatar-large" id="edit-avatar-container" style="width: 120px; height: 120px; position: relative; cursor: pointer; transition: transform 0.2s ease;">
+    <div class="profile-page" style="background: var(--bg-primary); min-height: 100vh; padding: 16px;">
+      
+      <!-- Header Section -->
+      <div style="display: flex; align-items: center; padding: 16px 8px 32px;">
+        <div class="profile-avatar-large" id="edit-avatar-container" style="width: 80px; height: 80px; position: relative; cursor: pointer; transition: transform 0.2s ease; margin-right: 20px; flex-shrink: 0; margin-bottom: 0;">
           <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" id="profile-avatar-img" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--bg-primary);">
-          <div style="position: absolute; bottom: 0; right: 0; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary); transition: transform 0.2s ease;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <div style="position: absolute; bottom: 0; right: 0; background: var(--accent-blue); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-primary); transition: transform 0.2s ease;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </div>
-          <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>
+        
+        <div>
+          <div style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;" id="display-name-header">${user?.name || 'Anonymous User'}</div>
+          <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Active Citizen</div>
+          <div style="display: inline-flex; align-items: center; gap: 4px; background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+            Verified Citizen
+          </div>
         </div>
       </div>
 
@@ -2376,66 +2386,56 @@ export function renderProfileContent(el, router) {
         </div>
       </div>
 
-
-      <!-- Info Section -->
-      <div style="background: var(--bg-secondary); margin-top: 8px; padding: 0 16px;">
-        <div class="profile-info-row" id="edit-name-row" style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background 0.2s;">
-          <div style="color: var(--text-muted); margin-right: 16px;">
-            ${icons.user}
+      <!-- Unified Menu Card -->
+      <div style="background: var(--bg-secondary); border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+        
+        <!-- Row: Edit Name -->
+        <div class="profile-menu-item" id="edit-name-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.user}</div>
+          <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
+            <div style="font-size: 15px; font-weight: 500;">My Profile (Name)</div>
+            <div style="font-size: 13px; color: var(--text-muted);" id="display-name">${user?.name || 'Anonymous User'}</div>
           </div>
-          <div style="flex: 1;">
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Name</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary); transition: color 0.2s;" id="display-name">${user?.name || 'Anonymous User'}</div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">This is not your username or pin. This name will be visible to your CivicVoice contacts.</div>
-          </div>
-          <div style="color: var(--text-muted); margin-left: 16px;" class="edit-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-          </div>
-        </div>
-
-        <div class="profile-info-row" id="edit-about-row" style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background 0.2s;">
-          <div style="color: var(--text-muted); margin-right: 16px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">About</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary); transition: color 0.2s;" id="display-about">${user?.about || 'Active Citizen 🌿'}</div>
-          </div>
-          <div style="color: var(--text-muted); margin-left: 16px;" class="edit-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-          </div>
-        </div>
-
-        <div style="display: flex; align-items: center; padding: 16px 0;">
-          <div style="color: var(--text-muted); margin-right: 16px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Email</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.email || 'N/A'}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings Menu -->
-      <div class="profile-menu" style="margin-top: 8px;">
-        <div class="profile-menu-item" id="menu-theme">
-          <div class="profile-menu-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </div>
-          <div class="profile-menu-text">Theme</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item" id="menu-notifications">
-          <div class="profile-menu-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        
+        <!-- Row: Edit About -->
+        <div class="profile-menu-item" id="edit-about-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+          <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
+            <div style="font-size: 15px; font-weight: 500;">My Activity (About)</div>
+            <div style="font-size: 13px; color: var(--text-muted);" id="display-about">${user?.about || 'Active Citizen 🌿'}</div>
           </div>
-          <div class="profile-menu-text">Notifications</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item text-danger" id="profile-logout-btn">
-          <div class="profile-menu-icon">${icons.logout}</div>
-          <div class="profile-menu-text">Logout</div>
+
+        <!-- Row: Email -->
+        <div class="profile-menu-item" style="border-bottom: 1px solid var(--border-subtle); cursor: default; padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+          <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
+            <div style="font-size: 15px; font-weight: 500;">Email Address</div>
+            <div style="font-size: 13px; color: var(--text-muted);">${user?.email || 'N/A'}</div>
+          </div>
+        </div>
+
+        <!-- Row: Theme -->
+        <div class="profile-menu-item" id="menu-theme" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></div>
+          <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">Theme Settings</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+
+        <!-- Row: Notifications -->
+        <div class="profile-menu-item" id="menu-notifications" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+          <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">Notifications</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+
+        <!-- Row: Logout -->
+        <div class="profile-menu-item text-danger" id="profile-logout-btn" style="padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px;">${icons.logout}</div>
+          <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">Logout</div>
         </div>
       </div>
     </div>
