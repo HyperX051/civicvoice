@@ -56,8 +56,6 @@ public class User extends BaseEntity implements UserDetails {
     @Builder.Default
     private boolean isVerified = false;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
 
     // ─── Spring Security UserDetails impl ───────────────────────────────────
     @Override
