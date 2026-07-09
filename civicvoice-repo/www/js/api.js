@@ -19,6 +19,14 @@ export async function fetchWithAuth(endpoint, options = {}) {
         headers,
     });
 
+    if (response.status === 401 || response.status === 403) {
+        // Token is likely expired or invalid
+        localStorage.removeItem('civicvoice_auth');
+        localStorage.removeItem('civicvoice_user');
+        window.location.hash = '#/login';
+        throw new Error('Session expired. Please log in again.');
+    }
+
     if (!response.ok) {
         let errorData = {};
         try {
