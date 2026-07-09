@@ -2361,8 +2361,22 @@ export function renderProfileContent(el, router) {
           </div>
           <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>
-        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+        </div>
       </div>
+
+      <!-- Avatar Picker Modal -->
+      <div id="avatar-picker-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 360px; padding: 24px;">
+          <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 20px; text-align: center;">Choose an Avatar</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;" id="avatar-grid">
+            <!-- Avatars injected here -->
+          </div>
+          <div style="display: flex; justify-content: center;">
+            <button class="btn btn-secondary" id="avatar-picker-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+
 
       <!-- Info Section -->
       <div style="background: var(--bg-secondary); margin-top: 8px; padding: 0 16px;">
@@ -2444,12 +2458,15 @@ export function renderProfileContent(el, router) {
         body: JSON.stringify(payload)
       });
 
-      // Update local state
-      localStorage.setItem('civicvoice_user', JSON.stringify(updatedUser));
+      // Update local state and auth cache
       auth.user = {
         ...updatedUser,
-        name: updatedUser.fullName || updatedUser.name
+        name: updatedUser.name
       };
+      
+      const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
+      authData.user = auth.user;
+      localStorage.setItem('civicvoice_auth', JSON.stringify(authData));
       
       return true;
     } catch (err) {
@@ -2458,61 +2475,50 @@ export function renderProfileContent(el, router) {
     }
   };
 
-  // Avatar Upload
+  // Avatar Picker
   const avatarContainer = document.getElementById('edit-avatar-container');
-  const avatarInput = document.getElementById('avatar-upload-input');
   const avatarImg = document.getElementById('profile-avatar-img');
   const avatarSpinner = document.getElementById('avatar-spinner');
+  const avatarModal = document.getElementById('avatar-picker-modal');
+  const avatarGrid = document.getElementById('avatar-grid');
 
   avatarContainer.addEventListener('click', () => {
-    avatarInput.click();
+    if (avatarModal) avatarModal.classList.remove('hidden');
   });
 
-  avatarInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const cancelBtn = document.getElementById('avatar-picker-cancel');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      avatarModal.classList.add('hidden');
+    });
+  }
 
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      showToast('Please select a valid image (JPEG, PNG, WebP)', 'warning');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Image must be under 5MB', 'warning');
-      return;
-    }
-
-    // Show loading state
-    avatarImg.style.opacity = '0.5';
-    avatarSpinner.classList.remove('hidden');
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Upload image to backend
-      const uploadRes = await fetchWithAuth('/upload/single?folder=avatars', {
-        method: 'POST',
-        headers: {}, // Remove Content-Type so browser sets boundary for multipart
-        body: formData
-      });
-
-      if (uploadRes.url) {
-        // Update user profile with new URL
-        const success = await updateProfileField('avatarUrl', uploadRes.url);
+  const AVATAR_SEEDS = ['Felix', 'Jasper', 'Milo', 'Max', 'Leo', 'Oliver', 'Charlie', 'Jack', 'Finn', 'Toby', 'Sam', 'Zoe'];
+  if (avatarGrid) {
+    AVATAR_SEEDS.forEach(seed => {
+      const url = `https://api.dicebear.com/9.x/notionists/svg?seed=${seed}&backgroundColor=e5e7eb,f3f4f6`;
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.cssText = 'width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, border-color 0.2s; background: var(--bg-secondary);';
+      img.onmouseover = () => { img.style.transform = 'scale(1.1)'; img.style.borderColor = 'var(--accent-blue)'; };
+      img.onmouseout = () => { img.style.transform = 'scale(1)'; img.style.borderColor = 'transparent'; };
+      img.onclick = async () => {
+        avatarModal.classList.add('hidden');
+        avatarImg.style.opacity = '0.5';
+        avatarSpinner.classList.remove('hidden');
+        
+        const success = await updateProfileField('avatarUrl', url);
         if (success) {
-          avatarImg.src = uploadRes.url;
-          showToast('Profile picture updated successfully', 'success');
+          avatarImg.src = url;
+          showToast('Avatar updated successfully', 'success');
         }
-      }
-    } catch (err) {
-      showToast('Failed to upload image: ' + err.message, 'error');
-    } finally {
-      avatarImg.style.opacity = '1';
-      avatarSpinner.classList.add('hidden');
-      avatarInput.value = ''; // Reset input
-    }
-  });
+        
+        avatarImg.style.opacity = '1';
+        avatarSpinner.classList.add('hidden');
+      };
+      avatarGrid.appendChild(img);
+    });
+  }
 
   // Edit Name
   const editNameRow = document.getElementById('edit-name-row');
