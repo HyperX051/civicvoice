@@ -2361,7 +2361,6 @@ export function renderProfileContent(el, router) {
           </div>
           <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>
-        </div>
       </div>
 
       <!-- Avatar Picker Modal -->
