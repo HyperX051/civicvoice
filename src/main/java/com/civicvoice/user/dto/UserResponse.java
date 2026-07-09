@@ -9,7 +9,9 @@ public record UserResponse(
     String email,
     String role,
     OffsetDateTime createdAt,
-    boolean isActive
+    boolean isActive,
+    String about,
+    String avatarUrl
 ) {
     public static UserResponse from(com.civicvoice.user.domain.User user) {
         return new UserResponse(
@@ -18,7 +20,9 @@ public record UserResponse(
             user.getEmail(),
             user.getRole().name(),
             user.getCreatedAt(),
-            user.isActive()
+            user.isActive(),
+            user.getAbout(),
+            user.getAvatarUrl()
         );
     }
 }

@@ -2355,7 +2355,7 @@ export function renderProfileContent(el, router) {
       <!-- Avatar Section -->
       <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 16px 24px; background: var(--bg-secondary);">
         <div class="profile-avatar-large" id="edit-avatar-btn" style="position: relative; cursor: pointer;">
-          <img src="img/sharan.jpg" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue);">
+          <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue);">
           <div style="position: absolute; bottom: 4px; right: 8px; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </div>
@@ -2384,7 +2384,7 @@ export function renderProfileContent(el, router) {
           </div>
           <div style="flex: 1;">
             <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">About</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">Active Citizen 🌿</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.about || 'Active Citizen 🌿'}</div>
           </div>
           <div style="color: var(--accent-blue); cursor: pointer;" id="edit-about-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
@@ -2431,25 +2431,73 @@ export function renderProfileContent(el, router) {
     </div>
   `;
 
-  // Functionality
-  document.getElementById('edit-avatar-btn')?.addEventListener('click', () => {
-    showToast('Changing avatar is coming soon.', 'info');
-  });
+  // Profile Edit Functionality
+  const openEditProfile = () => {
+    showModal(`
+      <div class="modal">
+        <div class="modal-header">
+          <h2>👤 Edit Profile</h2>
+          <button class="modal-close" id="close-modal">${icons.close}</button>
+        </div>
+        <div class="modal-body" style="padding: 16px 0;">
+          <form id="edit-profile-form" class="auth-form" style="padding: 0 16px;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="edit-name" value="${user?.name || ''}" required>
+            </div>
+            <div class="form-group">
+              <label>About</label>
+              <input type="text" id="edit-about" value="${user?.about || 'Active Citizen 🌿'}" maxlength="255">
+            </div>
+            <div class="form-group">
+              <label>Avatar URL (Optional)</label>
+              <input type="url" id="edit-avatar" value="${user?.avatarUrl || ''}" placeholder="https://example.com/photo.jpg">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    `);
 
-  document.getElementById('edit-name-btn')?.addEventListener('click', () => {
-    const newName = prompt('Enter your name', user?.name || '');
-    if (newName) {
-      showToast('Name updated locally.', 'success');
-      // In a real app, you'd call an API to update the name
-    }
-  });
+    document.getElementById('close-modal').addEventListener('click', hideModal);
+    document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
 
-  document.getElementById('edit-about-btn')?.addEventListener('click', () => {
-    const newAbout = prompt('Enter your About info', 'Active Citizen 🌿');
-    if (newAbout) {
-      showToast('About info updated locally.', 'success');
-    }
-  });
+      try {
+        const payload = {
+          name: document.getElementById('edit-name').value.trim(),
+          about: document.getElementById('edit-about').value.trim(),
+          avatarUrl: document.getElementById('edit-avatar').value.trim()
+        };
+
+        const updatedUser = await fetchWithAuth('/users/me', {
+          method: 'PUT',
+          body: JSON.stringify(payload)
+        });
+
+        // Update local storage
+        localStorage.setItem('civicvoice_user', JSON.stringify(updatedUser));
+        auth.user = updatedUser; // Update auth object
+        
+        hideModal();
+        showToast('Profile updated successfully!', 'success');
+        
+        // Re-render to show new data
+        renderProfileContent(el, router);
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+      }
+    });
+  };
+
+  document.getElementById('edit-avatar-btn')?.addEventListener('click', openEditProfile);
+  document.getElementById('edit-name-btn')?.addEventListener('click', openEditProfile);
+  document.getElementById('edit-about-btn')?.addEventListener('click', openEditProfile);
 
   document.getElementById('menu-theme')?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';

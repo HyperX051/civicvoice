@@ -14,14 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.civicvoice.user.dto.UserProfileUpdateRequest;
+import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     private final UserRepository userRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public Page<UserResponse> listUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -29,5 +37,20 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<User> users = userRepository.findAll(pageable);
         return users.map(UserResponse::from);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateProfile(
+            @Valid @RequestBody UserProfileUpdateRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setFullName(request.name());
+        user.setAbout(request.about());
+        user.setAvatarUrl(request.avatarUrl());
+        
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok(UserResponse.from(updatedUser));
     }
 }

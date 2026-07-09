@@ -43,6 +43,11 @@ public class User extends BaseEntity implements UserDetails {
 
     private String ward;
 
+    private String about;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private boolean isActive = true;
