@@ -2491,7 +2491,7 @@ export function renderProfileContent(el, router) {
       formData.append('file', file);
 
       // Upload image to backend
-      const uploadRes = await fetchWithAuth('/uploads/single?folder=avatars', {
+      const uploadRes = await fetchWithAuth('/upload/single?folder=avatars', {
         method: 'POST',
         headers: {}, // Remove Content-Type so browser sets boundary for multipart
         body: formData
