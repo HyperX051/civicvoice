@@ -8,8 +8,9 @@ export async function fetchWithAuth(endpoint, options = {}) {
     const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
     const token = authData.token;
     
+    const isFormData = options.body instanceof FormData;
     const headers = {
-        'Content-Type': 'application/json',
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers,
     };

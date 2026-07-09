@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/issues/*/assign").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/v1/polls").hasAnyRole("AUTHORITY", "NGO", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/polls/*/close").hasAnyRole("AUTHORITY", "NGO", "ADMIN")
+                .requestMatchers("/api/v1/users/me").authenticated()
                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
