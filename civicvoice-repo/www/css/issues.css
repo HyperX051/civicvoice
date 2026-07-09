@@ -69,7 +69,7 @@
   font-size: var(--font-base);
   font-weight: 700;
   line-height: 1.3;
-  color: var(--navy);
+  color: var(--text-primary);
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
