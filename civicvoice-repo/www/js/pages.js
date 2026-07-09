@@ -16,13 +16,59 @@ import { fetchWithAuth, API_BASE_URL } from './api.js';
 // LOGIN PAGE
 // ─────────────────────────────────────────────
 export function renderLoginPage(app, router, defaultEmail = '') {
-  app.innerHTML = `
-    <div class="auth-page">
-      <div class="auth-container">
-        <div class="auth-logo">
-          <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
-          <h1>CivicVoice</h1>
-          <p>Empowering Citizens, Transforming Governance</p>
+  document.documentElement.setAttribute('data-theme', 'dark'); // Force dark for splash/login
+  let loginError = '';
+  
+  // Only show splash if no default email is provided (i.e. direct navigation to /login, not coming from auth failure or role selection)
+  let showSplash = defaultEmail === '';
+
+  const render = () => {
+    if (showSplash) {
+      app.innerHTML = `
+        <div class="splash-page">
+          <div class="splash-content">
+            <div class="splash-logo">
+              <div class="auth-logo-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+              </div>
+              <h1>Civic<span style="color: var(--accent-amber)">Voice</span></h1>
+              <p>Your Voice. Better Governance.</p>
+            </div>
+            
+            <div class="splash-illustration-container">
+              <img src="assets/images/splash-illustration.png" alt="CivicVoice Illustration" class="splash-illustration" />
+            </div>
+
+            <div class="splash-footer">
+              <h2>Report. Track. Transform.</h2>
+              <p>Together we build better cities.</p>
+              
+              <div class="splash-actions">
+                <button id="btn-get-started" class="btn-splash-primary">Get Started</button>
+                <button id="btn-login" class="btn-splash-secondary">Login / Sign Up</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('btn-get-started').addEventListener('click', () => {
+        router.navigate('/register');
+      });
+      document.getElementById('btn-login').addEventListener('click', () => {
+        showSplash = false;
+        render();
+      });
+      return;
+    }
+
+    app.innerHTML = `
+      <div class="auth-page">
+        <div class="auth-container">
+          <div class="auth-logo">
+            <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
+            <h1>CivicVoice</h1>
+            <p>Empowering Citizens, Transforming Governance</p>
         </div>
         <div class="auth-card">
           <h2>Welcome Back</h2>
@@ -70,6 +116,9 @@ export function renderLoginPage(app, router, defaultEmail = '') {
       submitBtn.textContent = 'Sign In';
     }
   });
+
+  };
+  render();
 }
 
 
@@ -144,6 +193,9 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
 
   const citizenNav = `
     <div class="nav-section-title">Citizen</div>
+    <div class="nav-item ${pageTitle === 'Home' || pageTitle === 'Dashboard' ? 'active' : ''}" data-nav="${role === 'ADMIN' || role === 'AUTHORITY' ? '/dashboard' : '/issues'}">
+      ${icons.home}<span>Home</span>
+    </div>
     <div class="nav-item ${pageTitle === 'Issues' ? 'active' : ''}" data-nav="/issues">
       ${icons.issues}<span>Issues</span>
     </div>
@@ -151,8 +203,11 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
       ${icons.polls}<span>Polls</span>
     </div>
     <div class="nav-item ${pageTitle === 'Notifications' ? 'active' : ''}" data-nav="/notifications">
-      ${icons.bell}<span>Notifications</span>
+      ${icons.bell}<span>Updates</span>
       ${unread > 0 ? `<span class="nav-badge">${unread}</span>` : ''}
+    </div>
+    <div class="nav-item ${pageTitle === 'Profile' ? 'active' : ''}" data-nav="/profile">
+      ${icons.user}<span>Profile</span>
     </div>
   `;
 
@@ -1101,6 +1156,44 @@ export function renderIssueDetailContent(el, router, issueId) {
           <div class="issue-detail-body">
             ${issue.description}
             ${mediaHtml}
+          </div>
+
+          <!-- Complaint Tracking Timeline -->
+          <div class="timeline-card">
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Complaint Tracking
+            </h3>
+            <div class="timeline-container">
+              <div class="timeline-step completed">
+                <div class="timeline-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                <div class="timeline-content">
+                  <h4>Complaint Submitted</h4>
+                  <p>Issue received by CivicVoice</p>
+                </div>
+              </div>
+              <div class="timeline-step ${['ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED'].includes(issue.status) ? 'completed' : (issue.status === 'OPEN' ? 'current' : '')}">
+                <div class="timeline-icon">${['ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED'].includes(issue.status) ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}</div>
+                <div class="timeline-content">
+                  <h4>Assigned to Department</h4>
+                  <p>Routed to relevant authority</p>
+                </div>
+              </div>
+              <div class="timeline-step ${['IN_PROGRESS','RESOLVED','CLOSED'].includes(issue.status) ? 'completed' : (issue.status === 'ASSIGNED' ? 'current' : '')}">
+                <div class="timeline-icon">${['IN_PROGRESS','RESOLVED','CLOSED'].includes(issue.status) ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}</div>
+                <div class="timeline-content">
+                  <h4>Inspection Completed</h4>
+                  <p>On-site assessment done</p>
+                </div>
+              </div>
+              <div class="timeline-step ${['RESOLVED','CLOSED'].includes(issue.status) ? 'completed' : (['IN_PROGRESS'].includes(issue.status) ? 'current' : '')}">
+                <div class="timeline-icon">${['RESOLVED','CLOSED'].includes(issue.status) ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}</div>
+                <div class="timeline-content">
+                  <h4>Resolved</h4>
+                  <p>Issue successfully addressed</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="issue-detail-info">

@@ -18,6 +18,7 @@ import {
   renderManagePollDetailContent,
   renderAuditContent,
   renderUsersContent,
+  renderProfileContent,
 } from './pages.js';
 
 // Initialize auth
@@ -96,6 +97,10 @@ router.on('/polls', () => {
 
 router.on('/notifications', () => {
   requireAuth('Notifications', renderNotificationsContent);
+});
+
+router.on('/profile', () => {
+  requireAuth('Profile', renderProfileContent);
 });
 
 // ─── Authority Routes ───

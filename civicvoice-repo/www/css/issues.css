@@ -485,3 +485,91 @@
     width: 100%;
   }
 }
+
+/* ─── Timeline UI (Complaint Tracking) ─── */
+.timeline-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin: 16px 0;
+  border: 1px solid var(--border-subtle);
+}
+
+.timeline-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 12px;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 21px;
+  width: 2px;
+  background: var(--border-subtle);
+  z-index: 1;
+}
+
+.timeline-step {
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 24px;
+  z-index: 2;
+}
+
+.timeline-step:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-icon {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-subtle);
+  z-index: 2;
+  color: transparent;
+}
+
+.timeline-step.completed .timeline-icon {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.timeline-step.current .timeline-icon {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 4px rgba(13, 138, 188, 0.2);
+}
+
+.timeline-content h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.timeline-content p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
