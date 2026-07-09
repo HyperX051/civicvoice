@@ -427,16 +427,19 @@ export function renderIssuesContent(el, router) {
         </div>
       </div>
 
-      <div class="issue-filters">
-        <select id="filter-status">
-          <option value="">All Statuses</option>
-          <option value="OPEN" ${filterStatus === 'OPEN' ? 'selected' : ''}>Open</option>
-          <option value="ASSIGNED" ${filterStatus === 'ASSIGNED' ? 'selected' : ''}>Assigned</option>
-          <option value="IN_PROGRESS" ${filterStatus === 'IN_PROGRESS' ? 'selected' : ''}>In Progress</option>
-          <option value="RESOLVED" ${filterStatus === 'RESOLVED' ? 'selected' : ''}>Resolved</option>
-          <option value="CLOSED" ${filterStatus === 'CLOSED' ? 'selected' : ''}>Closed</option>
-        </select>
-        <select id="filter-category">
+      <div class="issue-tabs-container" style="overflow-x: auto; white-space: nowrap; margin-bottom: var(--space-lg); padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
+        <div class="tabs" style="border: none; background: transparent; padding: 0;">
+          <button class="tab ${filterStatus === '' ? 'active' : ''}" data-status="">All Issues</button>
+          <button class="tab ${filterStatus === 'OPEN' ? 'active' : ''}" data-status="OPEN">Open</button>
+          <button class="tab ${filterStatus === 'ASSIGNED' ? 'active' : ''}" data-status="ASSIGNED">Assigned</button>
+          <button class="tab ${filterStatus === 'IN_PROGRESS' ? 'active' : ''}" data-status="IN_PROGRESS">In Progress</button>
+          <button class="tab ${filterStatus === 'RESOLVED' ? 'active' : ''}" data-status="RESOLVED">Resolved</button>
+          <button class="tab ${filterStatus === 'CLOSED' ? 'active' : ''}" data-status="CLOSED">Closed</button>
+        </div>
+      </div>
+
+      <div class="issue-filters" style="display: flex; gap: 8px; margin-bottom: 16px; background: transparent; border: none; box-shadow: none; padding: 0;">
+        <select id="filter-category" style="max-width: 200px; border-radius: var(--radius-full); font-size: 13px;">
           <option value="">All Categories</option>
           <option value="ROAD" ${filterCategory === 'ROAD' ? 'selected' : ''}>Road</option>
           <option value="WATER" ${filterCategory === 'WATER' ? 'selected' : ''}>Water</option>
@@ -449,7 +452,7 @@ export function renderIssuesContent(el, router) {
           <option value="ILLEGAL_CONSTRUCTION" ${filterCategory === 'ILLEGAL_CONSTRUCTION' ? 'selected' : ''}>Illegal Construction</option>
           <option value="OTHER" ${filterCategory === 'OTHER' ? 'selected' : ''}>Other</option>
         </select>
-        <span class="text-sm text-muted" style="margin-left: auto;">${issues.length} issues found</span>
+        <span class="text-sm text-muted" style="margin-left: auto; align-self: center;">${issues.length} found</span>
       </div>
 
       ${viewMode === 'grid' ? (loading ? '<div class="empty-state"><div class="spinner"></div><h3>Loading issues...</h3></div>' : renderIssueCards(issues)) : renderMapView()}
@@ -462,7 +465,14 @@ export function renderIssuesContent(el, router) {
     // Bind events
     document.getElementById('view-grid')?.addEventListener('click', () => { viewMode = 'grid'; render(); });
     document.getElementById('view-map')?.addEventListener('click', () => { viewMode = 'map'; render(); });
-    document.getElementById('filter-status')?.addEventListener('change', (e) => { filterStatus = e.target.value; loadIssues(); });
+    
+    document.querySelectorAll('.tab[data-status]').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        filterStatus = e.target.dataset.status;
+        loadIssues();
+      });
+    });
+    
     document.getElementById('filter-category')?.addEventListener('change', (e) => { filterCategory = e.target.value; loadIssues(); });
     document.getElementById('report-issue-btn')?.addEventListener('click', () => showReportIssueModal(loadIssues));
 
@@ -515,12 +525,21 @@ function renderIssueCards(issues) {
       ${issues.map((issue, i) => `
         <div class="issue-card" data-id="${issue.id}" style="animation-delay: ${i * 0.05}s">
           <div class="issue-card-header">
-            <span class="issue-card-title">${issue.title}</span>
-            <span class="badge badge-priority-${(issue.priority || 'MEDIUM').toLowerCase()}">${issue.priority || 'MEDIUM'}</span>
-          </div>
-          <div class="issue-card-meta">
-            <span class="badge badge-status-${statusClass(issue.status)}">${issue.status.replace(/_/g, ' ')}</span>
-            <span class="issue-card-category">${formatCategory(issue.category)}</span>
+            <div class="issue-card-title-group">
+              <div class="issue-card-icon-box">
+                ${icons.mapPin}
+              </div>
+              <div class="issue-card-info">
+                <span class="issue-card-title">${issue.title}</span>
+                <span class="issue-card-location">
+                  ${issue.address ? issue.address + (issue.ward ? ', ' + issue.ward : '') : 'Location unavailable'}
+                </span>
+              </div>
+            </div>
+            <div class="issue-card-right">
+              <span class="badge badge-status-${statusClass(issue.status)}">${issue.status.replace(/_/g, ' ')}</span>
+              <span class="issue-card-time">${timeAgo(issue.createdAt)}</span>
+            </div>
           </div>
           <p class="issue-card-description">${issue.description}</p>
           <div class="issue-card-footer">
@@ -533,11 +552,10 @@ function renderIssueCards(issues) {
                 ${icons.messageCircle}
                 ${issue.commentCount}
               </span>
-              <button class="view-on-maps-btn" data-lat="${issue.latitude}" data-lng="${issue.longitude}" title="View on Google Maps">
-                ${icons.externalLink} Maps
-              </button>
             </div>
-            <span class="issue-card-time">${timeAgo(issue.createdAt)}</span>
+            <button class="view-on-maps-btn" data-lat="${issue.latitude}" data-lng="${issue.longitude}" title="View on Google Maps">
+              ${icons.externalLink} Maps
+            </button>
           </div>
         </div>
       `).join('')}
@@ -1246,9 +1264,11 @@ export function renderPollsContent(el, router) {
         </div>
       </div>
 
-      <div class="tabs" style="margin-bottom: var(--space-xl);">
-        <div class="tab ${activeTab === 'active' ? 'active' : ''}" data-tab="active">Active (${activePolls.length})</div>
-        <div class="tab ${activeTab === 'closed' ? 'active' : ''}" data-tab="closed">Closed (${closedPolls.length})</div>
+      <div class="issue-tabs-container" style="overflow-x: auto; white-space: nowrap; margin-bottom: var(--space-lg); padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
+        <div class="tabs" style="border: none; background: transparent; padding: 0;">
+          <div class="tab ${activeTab === 'active' ? 'active' : ''}" data-tab="active">Active (${activePolls.length})</div>
+          <div class="tab ${activeTab === 'closed' ? 'active' : ''}" data-tab="closed">Closed (${closedPolls.length})</div>
+        </div>
       </div>
 
       <div class="polls-grid">

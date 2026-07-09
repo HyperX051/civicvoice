@@ -7,38 +7,41 @@
 
 :root {
   /* ─── Color Palette — Clean Minimal Light ─── */
-  --bg-primary:       #f8f9fc;
+  --bg-primary:       #f8fafc;
   --bg-secondary:     #ffffff;
   --bg-card:          #ffffff;
-  --bg-card-hover:    #f1f4f9;
-  --bg-input:         #f4f6fa;
+  --bg-card-hover:    #f1f5f9;
+  --bg-input:         #f1f5f9;
   --bg-surface:       rgba(255, 255, 255, 0.85);
   --bg-glass:         rgba(255, 255, 255, 0.75);
 
-  --border-primary:   rgba(79, 109, 245, 0.2);
-  --border-subtle:    #e8ecf2;
-  --border-hover:     rgba(79, 109, 245, 0.45);
+  --border-primary:   rgba(37, 99, 235, 0.2);
+  --border-subtle:    #e2e8f0;
+  --border-hover:     rgba(37, 99, 235, 0.45);
 
-  --text-primary:     #111827;
-  --text-secondary:   #4b5563;
-  --text-muted:       #9ca3af;
-  --text-accent:      #4f6df5;
+  --text-primary:     #0f172a;
+  --text-secondary:   #475569;
+  --text-muted:       #94a3b8;
+  --text-accent:      #2563eb;
 
-  --accent-blue:      #4f6df5;
-  --accent-blue-glow: rgba(79, 109, 245, 0.12);
+  --accent-blue:      #2563eb;
+  --accent-blue-glow: rgba(37, 99, 235, 0.12);
   --accent-teal:      #0ea5e9;
   --accent-teal-glow: rgba(14, 165, 233, 0.12);
   --accent-purple:    #8b5cf6;
   --accent-purple-glow: rgba(139, 92, 246, 0.12);
-  --accent-amber:     #f59e0b;
-  --accent-amber-glow: rgba(245, 158, 11, 0.12);
+  --accent-amber:     #fbbf24;
+  --accent-amber-glow: rgba(251, 191, 36, 0.12);
+
+  --navy:             #0f172a;
+  --navy-light:       #1e293b;
 
   /* ─── Status Colors ─── */
-  --status-open:      #4f6df5;
+  --status-open:      #3b82f6;
   --status-assigned:  #f59e0b;
   --status-in-progress: #8b5cf6;
   --status-resolved:  #10b981;
-  --status-closed:    #6b7280;
+  --status-closed:    #64748b;
   --status-rejected:  #ef4444;
 
   /* ─── Priority Colors ─── */
@@ -161,9 +164,9 @@ input, select, textarea {
   font-family: var(--font-family);
   background: var(--bg-input);
   color: var(--text-primary);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
   font-size: var(--font-base);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   outline: none;
@@ -225,10 +228,10 @@ select {
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: var(--font-base);
   font-weight: 600;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   transition: all var(--transition-base);
   white-space: nowrap;
   position: relative;

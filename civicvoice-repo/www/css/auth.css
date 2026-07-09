@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
+  background: var(--navy);
   position: relative;
   overflow: hidden;
 }
@@ -69,11 +69,11 @@
 .auth-logo h1 {
   font-size: var(--font-2xl);
   font-weight: 800;
-  color: var(--text-primary);
+  color: #ffffff;
   letter-spacing: -0.5px;
 }
 .auth-logo p {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.7);
   font-size: var(--font-sm);
   margin-top: var(--space-xs);
 }
@@ -102,9 +102,19 @@
 
 .auth-form .btn-primary {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   font-size: var(--font-md);
   margin-top: var(--space-sm);
+  background: var(--accent-amber);
+  color: #0f172a;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+}
+.auth-form .btn-primary:hover {
+  background: #fcd34d;
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
 }
 
 .auth-divider {
