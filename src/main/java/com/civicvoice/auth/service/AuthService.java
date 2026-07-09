@@ -136,7 +136,8 @@ public class AuthService {
 
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
             user.getId(), user.getEmail(), user.getFullName(),
-            user.getRole(), user.getDepartment(), user.getWard()
+            user.getRole(), user.getDepartment(), user.getWard(),
+            user.getAbout(), user.getAvatarUrl()
         );
 
         return new AuthResponse.TokenPair(
