@@ -41,8 +41,9 @@ public class FileStorageService {
     public String store(MultipartFile file, String subFolder) {
         validateFile(file);
 
+        String rawFilename = file.getOriginalFilename();
         String originalFilename = StringUtils.cleanPath(
-                file.getOriginalFilename() != null ? file.getOriginalFilename() : "upload");
+                rawFilename != null ? rawFilename : "upload");
         String extension = extractExtension(originalFilename);
         String storedFilename = UUID.randomUUID() + (extension.isEmpty() ? "" : "." + extension);
 
@@ -97,8 +98,12 @@ public class FileStorageService {
         String relativePath = urlPath.substring("/uploads/".length());
         Path filePath = Paths.get(appProperties.getFile().getUploadDir(), relativePath).normalize();
         try {
-            Files.deleteIfExists(filePath);
-            log.info("File deleted: {}", filePath);
+            boolean deleted = Files.deleteIfExists(filePath);
+            if (deleted) {
+                log.info("File deleted: {}", filePath);
+            } else {
+                log.info("File not found for deletion: {}", filePath);
+            }
         } catch (IOException e) {
             log.warn("Could not delete file {}: {}", filePath, e.getMessage());
         }
@@ -133,8 +138,9 @@ public class FileStorageService {
      * is a known security risk (MIME confusion attacks).
      */
     private String detectMimeType(MultipartFile file) {
-        try (InputStream is = file.getInputStream()) {
-            String mimeType = URLConnection.guessContentTypeFromStream(is);
+        try (InputStream is = file.getInputStream();
+             InputStream bufferedIs = new java.io.BufferedInputStream(is)) {
+            String mimeType = URLConnection.guessContentTypeFromStream(bufferedIs);
             if (mimeType == null) {
                 // Fall back to declared content type as secondary check
                 mimeType = file.getContentType();
