@@ -66,6 +66,12 @@ export const auth = {
   },
 
   isAuthenticated() {
+    const stored = localStorage.getItem(AUTH_KEY);
+    if (!stored) {
+      this.token = null;
+      this.user = null;
+      return false;
+    }
     return !!this.token;
   },
 

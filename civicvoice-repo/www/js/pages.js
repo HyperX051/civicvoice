@@ -2354,39 +2354,41 @@ export function renderProfileContent(el, router) {
     <div class="profile-page" style="background: var(--bg-primary); min-height: 100vh;">
       <!-- Avatar Section -->
       <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 16px 24px; background: var(--bg-secondary);">
-        <div class="profile-avatar-large" id="edit-avatar-btn" style="position: relative; cursor: pointer;">
-          <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue);">
-          <div style="position: absolute; bottom: 4px; right: 8px; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary);">
+        <div class="profile-avatar-large" id="edit-avatar-container" style="position: relative; cursor: pointer; transition: transform 0.2s ease;">
+          <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" id="profile-avatar-img" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue); background: var(--bg-primary);">
+          <div style="position: absolute; bottom: 4px; right: 8px; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary); transition: transform 0.2s ease;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </div>
+          <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>
+        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
       </div>
 
       <!-- Info Section -->
       <div style="background: var(--bg-secondary); margin-top: 8px; padding: 0 16px;">
-        <div style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle);">
+        <div class="profile-info-row" id="edit-name-row" style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background 0.2s;">
           <div style="color: var(--text-muted); margin-right: 16px;">
             ${icons.user}
           </div>
           <div style="flex: 1;">
             <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Name</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.name || 'Anonymous User'}</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary); transition: color 0.2s;" id="display-name">${user?.name || 'Anonymous User'}</div>
             <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">This is not your username or pin. This name will be visible to your CivicVoice contacts.</div>
           </div>
-          <div style="color: var(--accent-blue); cursor: pointer;" id="edit-name-btn">
+          <div style="color: var(--text-muted); margin-left: 16px;" class="edit-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle);">
+        <div class="profile-info-row" id="edit-about-row" style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background 0.2s;">
           <div style="color: var(--text-muted); margin-right: 16px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           </div>
           <div style="flex: 1;">
             <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">About</div>
-            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.about || 'Active Citizen 🌿'}</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary); transition: color 0.2s;" id="display-about">${user?.about || 'Active Citizen 🌿'}</div>
           </div>
-          <div style="color: var(--accent-blue); cursor: pointer;" id="edit-about-btn">
+          <div style="color: var(--text-muted); margin-left: 16px;" class="edit-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
           </div>
         </div>
@@ -2418,11 +2420,6 @@ export function renderProfileContent(el, router) {
           <div class="profile-menu-text">Notifications</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item" id="menu-help">
-          <div class="profile-menu-icon">${icons.alertTriangle}</div>
-          <div class="profile-menu-text">Help</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
-        </div>
         <div class="profile-menu-item text-danger" id="profile-logout-btn">
           <div class="profile-menu-icon">${icons.logout}</div>
           <div class="profile-menu-text">Logout</div>
@@ -2431,73 +2428,148 @@ export function renderProfileContent(el, router) {
     </div>
   `;
 
-  // Profile Edit Functionality
-  const openEditProfile = () => {
-    showModal(`
-      <div class="modal">
-        <div class="modal-header">
-          <h2>👤 Edit Profile</h2>
-          <button class="modal-close" id="close-modal">${icons.close}</button>
-        </div>
-        <div class="modal-body" style="padding: 16px 0;">
-          <form id="edit-profile-form" class="auth-form" style="padding: 0 16px;">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="edit-name" value="${user?.name || ''}" required>
-            </div>
-            <div class="form-group">
-              <label>About</label>
-              <input type="text" id="edit-about" value="${user?.about || 'Active Citizen 🌿'}" maxlength="255">
-            </div>
-            <div class="form-group">
-              <label>Avatar URL (Optional)</label>
-              <input type="url" id="edit-avatar" value="${user?.avatarUrl || ''}" placeholder="https://example.com/photo.jpg">
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Save Changes</button>
-          </form>
-        </div>
-      </div>
-    `);
+  // Inline edit helper function
+  const updateProfileField = async (field, newValue) => {
+    try {
+      const payload = {
+        name: auth.user?.name || '',
+        about: auth.user?.about || '',
+        avatarUrl: auth.user?.avatarUrl || ''
+      };
+      
+      payload[field] = newValue;
+      
+      const updatedUser = await fetchWithAuth('/users/me', {
+        method: 'PUT',
+        body: JSON.stringify(payload)
+      });
 
-    document.getElementById('close-modal').addEventListener('click', hideModal);
-    document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('button');
-      btn.disabled = true;
-      btn.textContent = 'Saving...';
-
-      try {
-        const payload = {
-          name: document.getElementById('edit-name').value.trim(),
-          about: document.getElementById('edit-about').value.trim(),
-          avatarUrl: document.getElementById('edit-avatar').value.trim()
-        };
-
-        const updatedUser = await fetchWithAuth('/users/me', {
-          method: 'PUT',
-          body: JSON.stringify(payload)
-        });
-
-        // Update local storage
-        localStorage.setItem('civicvoice_user', JSON.stringify(updatedUser));
-        auth.user = updatedUser; // Update auth object
-        
-        hideModal();
-        showToast('Profile updated successfully!', 'success');
-        
-        // Re-render to show new data
-        renderProfileContent(el, router);
-      } catch (err) {
-        showToast(err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Save Changes';
-      }
-    });
+      // Update local state
+      localStorage.setItem('civicvoice_user', JSON.stringify(updatedUser));
+      auth.user = {
+        ...updatedUser,
+        name: updatedUser.fullName || updatedUser.name
+      };
+      
+      return true;
+    } catch (err) {
+      showToast(err.message, 'error');
+      return false;
+    }
   };
 
-  document.getElementById('edit-avatar-btn')?.addEventListener('click', openEditProfile);
-  document.getElementById('edit-name-btn')?.addEventListener('click', openEditProfile);
-  document.getElementById('edit-about-btn')?.addEventListener('click', openEditProfile);
+  // Avatar Upload
+  const avatarContainer = document.getElementById('edit-avatar-container');
+  const avatarInput = document.getElementById('avatar-upload-input');
+  const avatarImg = document.getElementById('profile-avatar-img');
+  const avatarSpinner = document.getElementById('avatar-spinner');
+
+  avatarContainer.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      showToast('Please select a valid image (JPEG, PNG, WebP)', 'warning');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image must be under 5MB', 'warning');
+      return;
+    }
+
+    // Show loading state
+    avatarImg.style.opacity = '0.5';
+    avatarSpinner.classList.remove('hidden');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Upload image to backend
+      const uploadRes = await fetchWithAuth('/uploads/single?folder=avatars', {
+        method: 'POST',
+        headers: {}, // Remove Content-Type so browser sets boundary for multipart
+        body: formData
+      });
+
+      if (uploadRes.url) {
+        // Update user profile with new URL
+        const success = await updateProfileField('avatarUrl', uploadRes.url);
+        if (success) {
+          avatarImg.src = uploadRes.url;
+          showToast('Profile picture updated successfully', 'success');
+        }
+      }
+    } catch (err) {
+      showToast('Failed to upload image: ' + err.message, 'error');
+    } finally {
+      avatarImg.style.opacity = '1';
+      avatarSpinner.classList.add('hidden');
+      avatarInput.value = ''; // Reset input
+    }
+  });
+
+  // Edit Name
+  const editNameRow = document.getElementById('edit-name-row');
+  editNameRow.addEventListener('click', () => {
+    const currentName = auth.user?.name || '';
+    const newName = prompt('Enter your name', currentName);
+    if (newName !== null && newName.trim() !== '' && newName !== currentName) {
+      const nameText = document.getElementById('display-name');
+      const originalText = nameText.textContent;
+      nameText.textContent = 'Saving...';
+      nameText.style.color = 'var(--text-muted)';
+      
+      updateProfileField('name', newName.trim()).then(success => {
+        if (success) {
+          nameText.textContent = newName.trim();
+          showToast('Name updated successfully', 'success');
+        } else {
+          nameText.textContent = originalText;
+        }
+        nameText.style.color = 'var(--text-primary)';
+      });
+    }
+  });
+
+  // Edit About
+  const editAboutRow = document.getElementById('edit-about-row');
+  editAboutRow.addEventListener('click', () => {
+    const currentAbout = auth.user?.about || '';
+    const newAbout = prompt('Enter your about status', currentAbout);
+    if (newAbout !== null && newAbout !== currentAbout) {
+      const aboutText = document.getElementById('display-about');
+      const originalText = aboutText.textContent;
+      aboutText.textContent = 'Saving...';
+      aboutText.style.color = 'var(--text-muted)';
+      
+      updateProfileField('about', newAbout.trim()).then(success => {
+        if (success) {
+          aboutText.textContent = newAbout.trim() || 'Active Citizen 🌿';
+          showToast('About status updated', 'success');
+        } else {
+          aboutText.textContent = originalText;
+        }
+        aboutText.style.color = 'var(--text-primary)';
+      });
+    }
+  });
+
+  // Hover effects via JS since inline styles are tricky with pseudoclasses
+  const addHoverEffect = (element) => {
+    element.addEventListener('mouseenter', () => element.style.background = 'var(--bg-tertiary)');
+    element.addEventListener('mouseleave', () => element.style.background = 'transparent');
+  };
+  addHoverEffect(editNameRow);
+  addHoverEffect(editAboutRow);
+  
+  avatarContainer.addEventListener('mouseenter', () => avatarContainer.style.transform = 'scale(1.02)');
+  avatarContainer.addEventListener('mouseleave', () => avatarContainer.style.transform = 'scale(1)');
 
   document.getElementById('menu-theme')?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -2509,10 +2581,6 @@ export function renderProfileContent(el, router) {
 
   document.getElementById('menu-notifications')?.addEventListener('click', () => {
     showToast('Notification preferences coming soon.', 'info');
-  });
-
-  document.getElementById('menu-help')?.addEventListener('click', () => {
-    showToast('Help center is currently unavailable.', 'info');
   });
 
   document.getElementById('profile-logout-btn')?.addEventListener('click', () => {
