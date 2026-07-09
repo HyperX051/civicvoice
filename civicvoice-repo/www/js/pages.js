@@ -2425,12 +2425,14 @@ export function renderProfileContent(el, router) {
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
 
-        <!-- Row: Notifications -->
-        <div class="profile-menu-item" id="menu-notifications" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
-          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-          <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">Notifications</div>
+        ${user?.role === 'CITIZEN' ? `
+        <!-- Row: My Issues -->
+        <div class="profile-menu-item" id="menu-my-issues" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+          <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">My Issues</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
+        ` : ''}
 
         <!-- Row: Logout -->
         <div class="profile-menu-item text-danger" id="profile-logout-btn" style="padding: 16px;">
@@ -2584,8 +2586,9 @@ export function renderProfileContent(el, router) {
     showToast('Theme updated to ' + newTheme, 'success');
   });
 
-  document.getElementById('menu-notifications')?.addEventListener('click', () => {
-    showToast('Notification preferences coming soon.', 'info');
+  document.getElementById('menu-my-issues')?.addEventListener('click', () => {
+    // Navigate to citizen issues/dashboard or show toast
+    router.navigate('/citizen');
   });
 
   document.getElementById('profile-logout-btn')?.addEventListener('click', () => {
