@@ -2364,44 +2364,43 @@ export function renderProfileContent(el, router) {
             Verified Citizen
           </div>
         </div>
-        <button class="btn-profile-settings" title="Settings">
+        <button class="btn-profile-settings" id="profile-settings-btn" title="Settings">
           ${icons.settings || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>'}
         </button>
       </div>
 
       <div class="profile-menu">
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-my-profile">
           <div class="profile-menu-icon">${icons.user}</div>
           <div class="profile-menu-text">My Profile</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-my-activity">
           <div class="profile-menu-icon">${icons.activity}</div>
           <div class="profile-menu-text">My Activity</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-saved-locations">
           <div class="profile-menu-icon">${icons.mapPin || icons.map}</div>
           <div class="profile-menu-text">Saved Locations</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-my-contributions">
           <div class="profile-menu-icon">${icons.thumbsUp}</div>
           <div class="profile-menu-text">My Contributions</div>
-          <div class="profile-menu-badge">120 pts</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-refer-earn">
           <div class="profile-menu-icon">${icons.users}</div>
           <div class="profile-menu-text">Refer & Earn</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-settings">
           <div class="profile-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
           <div class="profile-menu-text">Settings</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item">
+        <div class="profile-menu-item" id="menu-help">
           <div class="profile-menu-icon">${icons.alertTriangle}</div>
           <div class="profile-menu-text">Help & Support</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
@@ -2414,6 +2413,99 @@ export function renderProfileContent(el, router) {
       </div>
     </div>
   `;
+
+  // Functionality
+  const openSettings = () => {
+    showModal(\`
+      <div class="modal">
+        <div class="modal-header">
+          <h2>⚙️ Settings</h2>
+          <button class="modal-close" id="close-modal">\${icons.close}</button>
+        </div>
+        <div class="modal-body" style="padding: 16px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
+            <span>Dark Mode</span>
+            <input type="checkbox" id="theme-toggle-check" \${document.documentElement.getAttribute('data-theme') === 'dark' ? 'checked' : ''} style="width: auto;">
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
+            <span>Push Notifications</span>
+            <input type="checkbox" checked style="width: auto;">
+          </div>
+        </div>
+      </div>
+    \`);
+    document.getElementById('close-modal').addEventListener('click', hideModal);
+    document.getElementById('theme-toggle-check')?.addEventListener('change', (e) => {
+      const isDark = e.target.checked;
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('civicvoice_theme', isDark ? 'dark' : 'light');
+    });
+  };
+
+  document.getElementById('profile-settings-btn')?.addEventListener('click', openSettings);
+  document.getElementById('menu-settings')?.addEventListener('click', openSettings);
+
+  document.getElementById('menu-my-profile')?.addEventListener('click', () => {
+    showModal(\`
+      <div class="modal">
+        <div class="modal-header">
+          <h2>👤 Edit Profile</h2>
+          <button class="modal-close" id="close-modal">\${icons.close}</button>
+        </div>
+        <div class="modal-body" style="padding: 16px 0;">
+          <form class="auth-form" style="padding: 0 16px;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" value="\${user?.name || ''}" disabled>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" value="\${user?.email || ''}" disabled>
+            </div>
+            <p class="text-sm text-muted">To change your email or name, please contact support.</p>
+          </form>
+        </div>
+      </div>
+    \`);
+    document.getElementById('close-modal').addEventListener('click', hideModal);
+  });
+
+  document.getElementById('menu-my-activity')?.addEventListener('click', () => {
+    router.navigate(auth.getRole() === 'CITIZEN' ? '/issues' : '/dashboard');
+  });
+
+  document.getElementById('menu-saved-locations')?.addEventListener('click', () => {
+    showToast('Saved Locations are not yet enabled for your account.', 'info');
+  });
+
+  document.getElementById('menu-my-contributions')?.addEventListener('click', () => {
+    showToast('Contributions feature coming soon!', 'info');
+  });
+
+  document.getElementById('menu-refer-earn')?.addEventListener('click', () => {
+    showModal(\`
+      <div class="modal" style="text-align: center;">
+        <div class="modal-header">
+          <h2>🎁 Refer & Earn</h2>
+          <button class="modal-close" id="close-modal">\${icons.close}</button>
+        </div>
+        <div style="padding: 32px 16px;">
+          <h1 style="font-size: 48px; margin-bottom: 16px;">🤝</h1>
+          <h3>Invite your neighbors!</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">Earn 50 Civic Points for every verified citizen you invite.</p>
+          <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); margin-bottom: 16px; font-weight: bold;">
+            CIVIC-INVITE-\${user?.id || '101'}
+          </div>
+          <button class="btn btn-primary" onclick="navigator.clipboard.writeText('CIVIC-INVITE-\${user?.id || '101'}'); showToast('Copied to clipboard!', 'success');" style="width: 100%;">Copy Referral Code</button>
+        </div>
+      </div>
+    \`);
+    document.getElementById('close-modal').addEventListener('click', hideModal);
+  });
+
+  document.getElementById('menu-help')?.addEventListener('click', () => {
+    showToast('Help & Support portal is under maintenance.', 'info');
+  });
 
   document.getElementById('profile-logout-btn')?.addEventListener('click', () => {
     auth.logout();
