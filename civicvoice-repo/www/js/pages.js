@@ -2343,3 +2343,80 @@ export function renderUsersContent(el, router) {
 
   loadUsers();
 }
+
+// ─────────────────────────────────────────────
+// PROFILE PAGE
+// ─────────────────────────────────────────────
+export function renderProfileContent(el, router) {
+  const user = auth.user;
+  
+  el.innerHTML = `
+    <div class="profile-page">
+      <div class="profile-header-card">
+        <div class="profile-avatar-large">
+          <img src="img/sharan.jpg" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=120'" alt="Avatar">
+        </div>
+        <div class="profile-info">
+          <h2>${user?.name || 'Anonymous User'}</h2>
+          <p class="profile-location">Chennai, Tamil Nadu</p>
+          <div class="profile-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Verified Citizen
+          </div>
+        </div>
+        <button class="btn-profile-settings" title="Settings">
+          ${icons.settings || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>'}
+        </button>
+      </div>
+
+      <div class="profile-menu">
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.user}</div>
+          <div class="profile-menu-text">My Profile</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.activity}</div>
+          <div class="profile-menu-text">My Activity</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.mapPin || icons.map}</div>
+          <div class="profile-menu-text">Saved Locations</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.thumbsUp}</div>
+          <div class="profile-menu-text">My Contributions</div>
+          <div class="profile-menu-badge">120 pts</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.users}</div>
+          <div class="profile-menu-text">Refer & Earn</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+          <div class="profile-menu-text">Settings</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item">
+          <div class="profile-menu-icon">${icons.alertTriangle}</div>
+          <div class="profile-menu-text">Help & Support</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+        <div class="profile-menu-item text-danger" id="profile-logout-btn">
+          <div class="profile-menu-icon">${icons.logout}</div>
+          <div class="profile-menu-text">Logout</div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('profile-logout-btn')?.addEventListener('click', () => {
+    auth.logout();
+    router.navigate('/login');
+  });
+}
