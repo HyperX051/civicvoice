@@ -24,16 +24,24 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedUser(String email, String name, Role role) {
-        if (!userRepository.existsByEmail(email)) {
-            User user = User.builder()
-                    .email(email)
-                    .fullName(name)
-                    .passwordHash(passwordEncoder.encode("password"))
-                    .role(role)
-                    .isActive(true)
-                    .isVerified(true)
-                    .build();
-            userRepository.save(user);
-        }
+        userRepository.findByEmail(email).ifPresentOrElse(
+            user -> {
+                if (user.getRole() != role) {
+                    user.setRole(role);
+                    userRepository.save(user);
+                }
+            },
+            () -> {
+                User user = User.builder()
+                        .email(email)
+                        .fullName(name)
+                        .passwordHash(passwordEncoder.encode("password"))
+                        .role(role)
+                        .isActive(true)
+                        .isVerified(true)
+                        .build();
+                userRepository.save(user);
+            }
+        );
     }
 }
