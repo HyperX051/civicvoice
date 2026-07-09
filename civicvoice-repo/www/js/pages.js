@@ -2351,164 +2351,126 @@ export function renderProfileContent(el, router) {
   const user = auth.user;
   
   el.innerHTML = `
-    <div class="profile-page">
-      <div class="profile-header-card">
-        <div class="profile-avatar-large">
-          <img src="img/sharan.jpg" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=120'" alt="Avatar">
-        </div>
-        <div class="profile-info">
-          <h2>${user?.name || 'Anonymous User'}</h2>
-          <p class="profile-location">Chennai, Tamil Nadu</p>
-          <div class="profile-badge">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Verified Citizen
+    <div class="profile-page" style="background: var(--bg-primary); min-height: 100vh;">
+      <!-- Avatar Section -->
+      <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 16px 24px; background: var(--bg-secondary);">
+        <div class="profile-avatar-large" id="edit-avatar-btn" style="position: relative; cursor: pointer;">
+          <img src="img/sharan.jpg" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue);">
+          <div style="position: absolute; bottom: 4px; right: 8px; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </div>
         </div>
-        <button class="btn-profile-settings" id="profile-settings-btn" title="Settings">
-          ${icons.settings || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>'}
-        </button>
       </div>
 
-      <div class="profile-menu">
-        <div class="profile-menu-item" id="menu-my-profile">
-          <div class="profile-menu-icon">${icons.user}</div>
-          <div class="profile-menu-text">My Profile</div>
+      <!-- Info Section -->
+      <div style="background: var(--bg-secondary); margin-top: 8px; padding: 0 16px;">
+        <div style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle);">
+          <div style="color: var(--text-muted); margin-right: 16px;">
+            ${icons.user}
+          </div>
+          <div style="flex: 1;">
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Name</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.name || 'Anonymous User'}</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">This is not your username or pin. This name will be visible to your CivicVoice contacts.</div>
+          </div>
+          <div style="color: var(--accent-blue); cursor: pointer;" id="edit-name-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-subtle);">
+          <div style="color: var(--text-muted); margin-right: 16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">About</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">Active Citizen 🌿</div>
+          </div>
+          <div style="color: var(--accent-blue); cursor: pointer;" id="edit-about-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; padding: 16px 0;">
+          <div style="color: var(--text-muted); margin-right: 16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Email</div>
+            <div style="font-size: 16px; font-weight: 500; color: var(--text-primary);">${user?.email || 'N/A'}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Menu -->
+      <div class="profile-menu" style="margin-top: 8px;">
+        <div class="profile-menu-item" id="menu-theme">
+          <div class="profile-menu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </div>
+          <div class="profile-menu-text">Theme</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
-        <div class="profile-menu-item" id="menu-my-activity">
-          <div class="profile-menu-icon">${icons.activity}</div>
-          <div class="profile-menu-text">My Activity</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
-        </div>
-        <div class="profile-menu-item" id="menu-saved-locations">
-          <div class="profile-menu-icon">${icons.mapPin || icons.map}</div>
-          <div class="profile-menu-text">Saved Locations</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
-        </div>
-        <div class="profile-menu-item" id="menu-my-contributions">
-          <div class="profile-menu-icon">${icons.thumbsUp}</div>
-          <div class="profile-menu-text">My Contributions</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
-        </div>
-        <div class="profile-menu-item" id="menu-refer-earn">
-          <div class="profile-menu-icon">${icons.users}</div>
-          <div class="profile-menu-text">Refer & Earn</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
-        </div>
-        <div class="profile-menu-item" id="menu-settings">
-          <div class="profile-menu-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
-          <div class="profile-menu-text">Settings</div>
+        <div class="profile-menu-item" id="menu-notifications">
+          <div class="profile-menu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <div class="profile-menu-text">Notifications</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
         <div class="profile-menu-item" id="menu-help">
           <div class="profile-menu-icon">${icons.alertTriangle}</div>
-          <div class="profile-menu-text">Help & Support</div>
+          <div class="profile-menu-text">Help</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
         <div class="profile-menu-item text-danger" id="profile-logout-btn">
           <div class="profile-menu-icon">${icons.logout}</div>
           <div class="profile-menu-text">Logout</div>
-          <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
       </div>
     </div>
   `;
 
   // Functionality
-  const openSettings = () => {
-    showModal(\`
-      <div class="modal">
-        <div class="modal-header">
-          <h2>⚙️ Settings</h2>
-          <button class="modal-close" id="close-modal">\${icons.close}</button>
-        </div>
-        <div class="modal-body" style="padding: 16px 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
-            <span>Dark Mode</span>
-            <input type="checkbox" id="theme-toggle-check" \${document.documentElement.getAttribute('data-theme') === 'dark' ? 'checked' : ''} style="width: auto;">
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
-            <span>Push Notifications</span>
-            <input type="checkbox" checked style="width: auto;">
-          </div>
-        </div>
-      </div>
-    \`);
-    document.getElementById('close-modal').addEventListener('click', hideModal);
-    document.getElementById('theme-toggle-check')?.addEventListener('change', (e) => {
-      const isDark = e.target.checked;
-      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      localStorage.setItem('civicvoice_theme', isDark ? 'dark' : 'light');
-    });
-  };
-
-  document.getElementById('profile-settings-btn')?.addEventListener('click', openSettings);
-  document.getElementById('menu-settings')?.addEventListener('click', openSettings);
-
-  document.getElementById('menu-my-profile')?.addEventListener('click', () => {
-    showModal(\`
-      <div class="modal">
-        <div class="modal-header">
-          <h2>👤 Edit Profile</h2>
-          <button class="modal-close" id="close-modal">\${icons.close}</button>
-        </div>
-        <div class="modal-body" style="padding: 16px 0;">
-          <form class="auth-form" style="padding: 0 16px;">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" value="\${user?.name || ''}" disabled>
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" value="\${user?.email || ''}" disabled>
-            </div>
-            <p class="text-sm text-muted">To change your email or name, please contact support.</p>
-          </form>
-        </div>
-      </div>
-    \`);
-    document.getElementById('close-modal').addEventListener('click', hideModal);
+  document.getElementById('edit-avatar-btn')?.addEventListener('click', () => {
+    showToast('Changing avatar is coming soon.', 'info');
   });
 
-  document.getElementById('menu-my-activity')?.addEventListener('click', () => {
-    router.navigate(auth.getRole() === 'CITIZEN' ? '/issues' : '/dashboard');
+  document.getElementById('edit-name-btn')?.addEventListener('click', () => {
+    const newName = prompt('Enter your name', user?.name || '');
+    if (newName) {
+      showToast('Name updated locally.', 'success');
+      // In a real app, you'd call an API to update the name
+    }
   });
 
-  document.getElementById('menu-saved-locations')?.addEventListener('click', () => {
-    showToast('Saved Locations are not yet enabled for your account.', 'info');
+  document.getElementById('edit-about-btn')?.addEventListener('click', () => {
+    const newAbout = prompt('Enter your About info', 'Active Citizen 🌿');
+    if (newAbout) {
+      showToast('About info updated locally.', 'success');
+    }
   });
 
-  document.getElementById('menu-my-contributions')?.addEventListener('click', () => {
-    showToast('Contributions feature coming soon!', 'info');
+  document.getElementById('menu-theme')?.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('civicvoice_theme', newTheme);
+    showToast('Theme updated to ' + newTheme, 'success');
   });
 
-  document.getElementById('menu-refer-earn')?.addEventListener('click', () => {
-    showModal(\`
-      <div class="modal" style="text-align: center;">
-        <div class="modal-header">
-          <h2>🎁 Refer & Earn</h2>
-          <button class="modal-close" id="close-modal">\${icons.close}</button>
-        </div>
-        <div style="padding: 32px 16px;">
-          <h1 style="font-size: 48px; margin-bottom: 16px;">🤝</h1>
-          <h3>Invite your neighbors!</h3>
-          <p style="color: var(--text-muted); margin-bottom: 24px;">Earn 50 Civic Points for every verified citizen you invite.</p>
-          <div style="background: var(--bg-input); padding: 12px; border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); margin-bottom: 16px; font-weight: bold;">
-            CIVIC-INVITE-\${user?.id || '101'}
-          </div>
-          <button class="btn btn-primary" onclick="navigator.clipboard.writeText('CIVIC-INVITE-\${user?.id || '101'}'); showToast('Copied to clipboard!', 'success');" style="width: 100%;">Copy Referral Code</button>
-        </div>
-      </div>
-    \`);
-    document.getElementById('close-modal').addEventListener('click', hideModal);
+  document.getElementById('menu-notifications')?.addEventListener('click', () => {
+    showToast('Notification preferences coming soon.', 'info');
   });
 
   document.getElementById('menu-help')?.addEventListener('click', () => {
-    showToast('Help & Support portal is under maintenance.', 'info');
+    showToast('Help center is currently unavailable.', 'info');
   });
 
   document.getElementById('profile-logout-btn')?.addEventListener('click', () => {
-    auth.logout();
-    router.navigate('/login');
+    if (confirm('Are you sure you want to log out?')) {
+      auth.logout();
+      router.navigate('/login');
+    }
   });
 }
