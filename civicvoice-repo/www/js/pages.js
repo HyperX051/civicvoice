@@ -2354,9 +2354,9 @@ export function renderProfileContent(el, router) {
     <div class="profile-page" style="background: var(--bg-primary); min-height: 100vh;">
       <!-- Avatar Section -->
       <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 16px 24px; background: var(--bg-secondary);">
-        <div class="profile-avatar-large" id="edit-avatar-container" style="position: relative; cursor: pointer; transition: transform 0.2s ease;">
-          <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" id="profile-avatar-img" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-blue); background: var(--bg-primary);">
-          <div style="position: absolute; bottom: 4px; right: 8px; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary); transition: transform 0.2s ease;">
+        <div class="profile-avatar-large" id="edit-avatar-container" style="width: 120px; height: 120px; position: relative; cursor: pointer; transition: transform 0.2s ease;">
+          <img src="${user?.avatarUrl || 'img/sharan.jpg'}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0D8ABC&color=fff&size=150'" alt="Avatar" id="profile-avatar-img" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--bg-primary);">
+          <div style="position: absolute; bottom: 0; right: 0; background: var(--accent-blue); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-secondary); transition: transform 0.2s ease;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           </div>
           <div id="avatar-spinner" class="spinner hidden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
