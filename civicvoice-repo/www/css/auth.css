@@ -80,7 +80,7 @@
 }
 
 .auth-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: var(--space-xl);
@@ -284,7 +284,7 @@
   border-radius: 14px;
   font-size: 16px;
   font-weight: 700;
-  background: #ffffff;
+  background: var(--bg-card);
   color: var(--accent-blue);
   border: none;
   cursor: pointer;
@@ -293,7 +293,7 @@
   letter-spacing: 0.2px;
 }
 .btn-splash-primary:hover {
-  background: #f0f4ff;
+  background: var(--bg-primary);
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(0,0,0,0.3);
 }

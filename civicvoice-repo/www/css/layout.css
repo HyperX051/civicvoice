@@ -11,7 +11,7 @@
 /* ─── Sidebar ─── */
 .sidebar {
   width: var(--sidebar-width);
-  background: #ffffff;
+  background: var(--bg-card);
   border-right: 1.5px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
   gap: var(--space-sm);
   border-bottom: 1.5px solid var(--border-subtle);
   min-height: var(--topbar-height);
-  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  background: var(--bg-secondary);
 }
 .sidebar-logo {
   width: 38px;
@@ -132,7 +132,7 @@
 .sidebar-footer {
   padding: var(--space-md) var(--space-sm);
   border-top: 1.5px solid var(--border-subtle);
-  background: #fafcff;
+  background: var(--bg-primary);
 }
 
 .sidebar-user {
@@ -196,7 +196,7 @@
 /* ─── Top Bar ─── */
 .topbar {
   height: var(--topbar-height);
-  background: #ffffff;
+  background: var(--bg-card);
   border-bottom: 1.5px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -269,7 +269,7 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   border: 1.5px solid var(--border-subtle);
-  background: white;
+  background: var(--bg-secondary);
 }
 .notification-bell:hover {
   background: var(--accent-blue-glow);
@@ -351,7 +351,7 @@
   cursor: pointer;
   border: 1.5px solid var(--border-subtle);
   color: var(--accent-blue);
-  background: white;
+  background: var(--bg-secondary);
 }
 .mobile-menu-btn:hover { background: var(--accent-blue-glow); }
 .mobile-menu-btn svg { width: 20px; height: 20px; }
@@ -367,7 +367,7 @@
     border-right: none;
     border-top: 1.5px solid var(--border-subtle);
     z-index: 200;
-    background: #ffffff;
+    background: var(--bg-card);
     box-shadow: 0 -4px 20px rgba(37, 99, 235, 0.10);
   }
   .sidebar-header, .sidebar-footer, .nav-section-title {
@@ -413,7 +413,7 @@
   top: 55px;
   right: 20px;
   width: 360px;
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: 0 16px 48px rgba(37, 99, 235, 0.16);
@@ -439,7 +439,7 @@
   right: 28px;
   width: 12px;
   height: 12px;
-  background: white;
+  background: var(--bg-card);
   border-left: 1.5px solid var(--border-subtle);
   border-top: 1.5px solid var(--border-subtle);
   transform: rotate(45deg);
@@ -454,7 +454,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f0f4ff;
+  background: var(--bg-primary);
 }
 #dropdown-mark-read {
   font-size: 12px;
@@ -486,7 +486,7 @@
   padding: 14px;
   text-align: center;
   border-top: 1.5px solid var(--border-subtle);
-  background: #f0f4ff;
+  background: var(--bg-primary);
 }
 .notifications-dropdown-footer a {
   color: var(--accent-blue);
