@@ -10,20 +10,25 @@ import {
   animateCount,
 } from './utils.js';
 import { fetchWithAuth, API_BASE_URL } from './api.js';
+import { locationService } from './location.js';
 
 
 // ─────────────────────────────────────────────
 // LOGIN PAGE
 // ─────────────────────────────────────────────
 export function renderLoginPage(app, router, defaultEmail = '') {
-  document.documentElement.setAttribute('data-theme', 'dark'); // Force dark for splash/login
+  document.documentElement.removeAttribute('data-theme'); // Use white-blue light theme for login
   let loginError = '';
   
-  // Only show splash if no default email is provided (i.e. direct navigation to /login, not coming from auth failure or role selection)
-  let showSplash = defaultEmail === '';
+  // Always go straight to the login form — no splash
+  let showSplash = false;
 
   const render = () => {
     if (showSplash) {
+      const locData = locationService._payload();
+      const locLabel = locData.displayLabel || null;
+      const permDenied = locationService.permissionState === 'denied';
+
       app.innerHTML = `
         <div class="splash-page">
           <div class="splash-content">
@@ -31,13 +36,23 @@ export function renderLoginPage(app, router, defaultEmail = '') {
               <div class="auth-logo-icon">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
               </div>
-              <h1>Civic<span style="color: var(--accent-amber)">Voice</span></h1>
+              <h1>Civic<span style="color: rgba(255,255,255,0.75)">Voice</span></h1>
               <p>Your Voice. Better Governance.</p>
             </div>
             
             <div class="splash-illustration-container">
               <img src="assets/images/splash-illustration.png" alt="CivicVoice Illustration" class="splash-illustration" />
             </div>
+
+            ${!permDenied ? `
+            <div class="location-permission-card" id="loc-perm-card">
+              <div class="location-permission-icon">📍</div>
+              <div class="location-permission-text">
+                <strong>${locLabel ? '📡 Location Active' : 'Enable Location'}</strong>
+                <span>${locLabel ? locLabel : 'Allow location access to auto-fill issue reports and see nearby civic issues.'}</span>
+              </div>
+              ${!locLabel ? `<button class="location-permission-btn" id="splash-loc-btn">Allow</button>` : `<span style="color:rgba(255,255,255,0.8);font-size:18px;">✓</span>`}
+            </div>` : ''}
 
             <div class="splash-footer">
               <h2>Report. Track. Transform.</h2>
@@ -59,6 +74,15 @@ export function renderLoginPage(app, router, defaultEmail = '') {
         showSplash = false;
         render();
       });
+
+      // Location permission button on splash
+      document.getElementById('splash-loc-btn')?.addEventListener('click', async () => {
+        const btn = document.getElementById('splash-loc-btn');
+        if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+        await locationService.startWatching();
+        render(); // re-render with updated state
+      });
+
       return;
     }
 
@@ -98,9 +122,32 @@ export function renderLoginPage(app, router, defaultEmail = '') {
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Signing in...';
+    submitBtn.innerHTML = `<span class="login-spinner"></span> Signing in...`;
+
+    // After 4s, show a "server waking up" notice — Render free tier cold start
+    const wakeNotice = document.getElementById('auth-error');
+    const wakeTimer = setTimeout(() => {
+      wakeNotice.classList.remove('hidden');
+      wakeNotice.style.background = 'rgba(37,99,235,0.06)';
+      wakeNotice.style.borderColor = 'rgba(37,99,235,0.25)';
+      wakeNotice.style.color = 'var(--accent-blue)';
+      wakeNotice.innerHTML = `⏳ <strong>Server is waking up</strong> — this takes ~30s on first load. Please wait...`;
+      // Cycle messages
+      let count = 0;
+      const msgs = ['⏳ Still starting up, almost there...', '⏳ Backend loading, hang tight...', '⏳ Nearly ready...'];
+      const cycleTimer = setInterval(() => {
+        wakeNotice.innerHTML = `${msgs[count % msgs.length]}`;
+        count++;
+      }, 8000);
+      submitBtn._cycleTimer = cycleTimer;
+    }, 4000);
+
     const result = await auth.login(email, password);
+    clearTimeout(wakeTimer);
+    clearInterval(submitBtn._cycleTimer);
+
     if (result.success) {
+      submitBtn.innerHTML = `✅ Welcome back!`;
       showToast(`Welcome back, ${auth.user.name}!`, 'success');
       const role = auth.getRole();
       if (role === 'ADMIN' || role === 'AUTHORITY') {
@@ -109,11 +156,13 @@ export function renderLoginPage(app, router, defaultEmail = '') {
         router.navigate('/issues');
       }
     } else {
-      const errorEl = document.getElementById('auth-error');
-      errorEl.classList.remove('hidden');
-      errorEl.textContent = result.error || 'Invalid email or password.';
+      wakeNotice.classList.remove('hidden');
+      wakeNotice.style.background = '';
+      wakeNotice.style.borderColor = '';
+      wakeNotice.style.color = '';
+      wakeNotice.textContent = result.error || 'Invalid email or password.';
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Sign In';
+      submitBtn.innerHTML = 'Sign In';
     }
   });
 
@@ -270,6 +319,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
             <h2 class="topbar-title">${pageTitle}</h2>
           </div>
           <div class="topbar-right" style="position: relative;">
+            <div id="location-pill-topbar" style="display:none;"></div>
             <div class="topbar-search">
               ${icons.search}
               <input type="text" placeholder="Search..." id="topbar-search-input" />
@@ -428,6 +478,32 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
       })
       .catch(console.error);
   }
+
+  // ── Live Location Pill in Topbar ──
+  function updateLocationPill(payload) {
+    const pill = document.getElementById('location-pill-topbar');
+    if (!pill) return;
+    if (payload && payload.displayLabel) {
+      pill.style.display = '';
+      pill.innerHTML = `
+        <div class="location-pill" title="Your current location: ${payload.displayLabel}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${payload.displayLabel}
+        </div>
+      `;
+    }
+  }
+
+  // Show immediately if we already have location
+  updateLocationPill(locationService._payload());
+  // Update live as location changes
+  locationService.on(updateLocationPill);
+  // Cleanup listener when page navigates away
+  const cleanup = () => { locationService.off(updateLocationPill); };
+  window.addEventListener('hashchange', cleanup, { once: true });
 }
 
 
@@ -763,13 +839,38 @@ function showReportIssueModal(onSuccess) {
   document.getElementById('close-modal').addEventListener('click', hideModal);
 
   // ── Initialize Map ──
-  let capturedLat = null, capturedLng = null;
+  // Use stored location from locationService if available
+  const storedLoc = locationService._payload();
+  let capturedLat = storedLoc.lat || null;
+  let capturedLng = storedLoc.lng || null;
   let reportMapMarker = null;
-  const reportMap = L.map('report-modal-map').setView([20.5937, 78.9629], 5);
+
+  const initialView = (capturedLat && capturedLng) ? [capturedLat, capturedLng] : [20.5937, 78.9629];
+  const initialZoom = (capturedLat && capturedLng) ? 15 : 5;
+  const reportMap = L.map('report-modal-map').setView(initialView, initialZoom);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(reportMap);
-  setTimeout(() => reportMap.invalidateSize(), 150);
+  setTimeout(() => {
+    reportMap.invalidateSize();
+    // If we already have location, show a marker and pre-fill address fields
+    if (capturedLat && capturedLng) {
+      reportMapMarker = L.marker([capturedLat, capturedLng]).addTo(reportMap);
+      const statusEl = document.getElementById('location-status');
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.innerHTML = `<span style="color: var(--success);">✅ Location auto-detected</span>${storedLoc.displayLabel ? ` — <strong>${storedLoc.displayLabel}</strong>` : ''}`;
+      }
+      // Pre-fill city/area from stored geocode
+      if (storedLoc.city) document.getElementById('issue-city').value = storedLoc.city;
+      if (storedLoc.area) {
+        document.getElementById('issue-ward').value = storedLoc.area;
+        document.getElementById('issue-address').value = storedLoc.area;
+      }
+      const locBtn = document.getElementById('get-location-btn');
+      if (locBtn) locBtn.textContent = '✅ Location Detected — Click to Refresh';
+    }
+  }, 150);
 
   const statusEl = document.getElementById('location-status');
 
