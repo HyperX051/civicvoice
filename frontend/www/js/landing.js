@@ -180,9 +180,9 @@ export function renderLandingPage(container, router) {
       const absDistance = Math.abs(distanceFromCenter);
       
       // Dynamic rotation: 
-      // Element at bottom (distance = 1): looking down -> top front, bottom back (rotateX -25)
-      // Element at top (distance = -1): looking up -> top back, bottom front (rotateX +25)
-      const currentRotate = -25 * distanceFromCenter;
+      // Element at bottom (distance = 1): top back, bottom front (rotateX +25)
+      // Element at top (distance = -1): top front, bottom back (rotateX -25)
+      const currentRotate = 25 * distanceFromCenter;
       
       // Scale is 1 when centered, 0.9 when far away.
       const currentScale = 1.0 - (0.1 * absDistance);
