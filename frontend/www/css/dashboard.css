@@ -59,7 +59,7 @@
   justify-content: center;
   margin-bottom: var(--space-md);
 }
-.stat-card.blue .stat-card-icon { background: var(--accent-brand-glow); color: var(--accent-brand); }
+.stat-card.blue .stat-card-icon { background: var(--accent-brand-glow); color: var(--text-primary); }
 .stat-card.teal .stat-card-icon { background: var(--accent-teal-glow); color: var(--accent-teal); }
 .stat-card.purple .stat-card-icon { background: var(--accent-purple-glow); color: var(--accent-purple); }
 .stat-card.amber .stat-card-icon { background: var(--accent-amber-glow); color: var(--accent-amber); }
@@ -128,7 +128,7 @@
 .panel-title {
   font-size: var(--font-md);
   font-weight: 700;
-  color: var(--accent-brand);
+  color: var(--text-primary);
 }
 .panel-subtitle {
   font-size: var(--font-sm);

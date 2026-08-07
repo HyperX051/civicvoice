@@ -110,11 +110,11 @@
   background: var(--bg-primary);
 }
 .poll-option:hover {
-  border-color: var(--accent-brand);
+  border-color: var(--text-primary);
   background: var(--accent-brand-glow);
 }
 .poll-option.selected {
-  border-color: var(--accent-brand);
+  border-color: var(--text-primary);
   background: var(--accent-brand-glow);
   box-shadow: 0 0 0 1px var(--accent-brand);
 }
@@ -132,7 +132,7 @@
   background: var(--bg-secondary);
 }
 .poll-option.selected .poll-radio {
-  border-color: var(--accent-brand);
+  border-color: var(--text-primary);
 }
 .poll-option.selected .poll-radio::after {
   content: '';
@@ -178,7 +178,7 @@
 .poll-result-percentage {
   font-size: var(--font-sm);
   font-weight: 700;
-  color: var(--accent-brand);
+  color: var(--text-primary);
 }
 
 .poll-result-bar {
@@ -202,7 +202,7 @@
 }
 
 .poll-result-item.user-voted .poll-result-label {
-  color: var(--accent-brand);
+  color: var(--text-primary);
   font-weight: 600;
 }
 .poll-result-item.user-voted .poll-result-bar-fill {
@@ -211,7 +211,7 @@
 
 .your-vote-indicator {
   font-size: var(--font-xs);
-  color: var(--accent-brand);
+  color: var(--text-primary);
   background: var(--accent-brand-glow);
   padding: 2px 8px;
   border-radius: var(--radius-full);

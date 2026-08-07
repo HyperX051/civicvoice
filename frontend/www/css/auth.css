@@ -126,7 +126,7 @@
   margin-top: var(--space-lg);
 }
 .auth-divider a {
-  color: var(--accent-brand);
+  color: var(--text-primary);
   font-weight: 600;
   margin-left: 4px;
 }
@@ -163,14 +163,14 @@
   background: var(--bg-primary);
 }
 .role-option:hover {
-  border-color: var(--accent-brand);
-  color: var(--accent-brand);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
   background: var(--accent-brand-glow);
 }
 .role-option.active {
-  border-color: var(--accent-brand);
+  border-color: var(--text-primary);
   background: var(--accent-brand-glow);
-  color: var(--accent-brand);
+  color: var(--text-primary);
 }
 
 /* ─── Splash Screen ─── */
@@ -285,7 +285,7 @@
   font-size: 16px;
   font-weight: 700;
   background: var(--bg-card);
-  color: var(--accent-brand);
+  color: var(--text-primary);
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
@@ -372,7 +372,7 @@
 .location-permission-btn {
   padding: 8px 14px;
   background: white;
-  color: var(--accent-brand);
+  color: var(--text-primary);
   border: none;
   border-radius: 10px;
   font-size: 12px;

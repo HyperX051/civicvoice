@@ -50,7 +50,7 @@
   flex-shrink: 0;
   border: 1.5px solid var(--border-subtle);
 }
-.notification-icon.status { background: rgba(79,109,245,0.08); color: var(--accent-brand); }
+.notification-icon.status { background: rgba(79,109,245,0.08); color: var(--text-primary); }
 .notification-icon.assignment { background: rgba(139,92,246,0.08); color: var(--accent-purple); }
 .notification-icon.sla { background: rgba(245,158,11,0.08); color: var(--warning); }
 .notification-icon.comment { background: rgba(14,165,233,0.08); color: var(--accent-teal); }
