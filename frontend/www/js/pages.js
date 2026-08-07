@@ -2507,17 +2507,19 @@ export function renderUsersContent(el, router) {
             <div class="user-card-info">
               <div class="user-card-name">${user.name}</div>
               <div class="user-card-email">${user.email}</div>
-              <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; overflow: hidden;">
                 <span class="badge badge-role-${user.role.toLowerCase()}">${user.role}</span>
                 <span class="status-dot ${user.isActive ? 'active' : 'inactive'}"></span>
-                <span class="text-sm text-muted">${user.isActive ? 'Active' : 'Suspended'}</span>
+                <span class="text-sm text-muted" style="white-space: nowrap;">${user.isActive ? 'Active' : 'Suspended'}</span>
               </div>
             </div>
-            <div class="user-card-actions" style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="user-card-actions">
               <button class="btn btn-secondary btn-sm toggle-status-btn" data-id="${user.id}" data-active="${user.isActive}">
                 ${user.isActive ? 'Suspend' : 'Activate'}
               </button>
-              <button class="btn btn-secondary btn-sm text-danger delete-user-btn" data-id="${user.id}">Delete</button>
+              <button class="btn btn-secondary btn-sm text-danger delete-user-btn" data-id="${user.id}">
+                Delete
+              </button>
             </div>
           </div>
         `).join('')}

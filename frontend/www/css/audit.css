@@ -153,9 +153,12 @@
 }
 .user-card-actions {
   display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .status-dot {
