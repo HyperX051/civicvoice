@@ -73,12 +73,29 @@ public class AnalyticsService {
 
     public List<Map<String, Object>> getTrends() {
         List<Object[]> raw = issueRepository.getIssueTrends();
-        List<Map<String, Object>> result = new ArrayList<>();
+        Map<String, Object[]> rawMap = new HashMap<>();
         for (Object[] row : raw) {
+            rawMap.put(String.valueOf(row[0]), row);
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        
+        for (int i = 13; i >= 0; i--) {
+            java.time.LocalDate date = today.minusDays(i);
+            String dateStr = date.toString();
+            
             Map<String, Object> map = new HashMap<>();
-            map.put("date", String.valueOf(row[0]));
-            map.put("submitted", ((Number) row[1]).longValue());
-            map.put("resolved", ((Number) row[2]).longValue());
+            map.put("date", dateStr);
+            
+            if (rawMap.containsKey(dateStr)) {
+                Object[] row = rawMap.get(dateStr);
+                map.put("submitted", ((Number) row[1]).longValue());
+                map.put("resolved", ((Number) row[2]).longValue());
+            } else {
+                map.put("submitted", 0L);
+                map.put("resolved", 0L);
+            }
             result.add(map);
         }
         return result;
