@@ -1789,79 +1789,79 @@ export async function renderDashboardContent(el, router) {
 function drawTrendChart(trends) {
   const canvas = document.getElementById('trend-chart');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  
-  // Use canvas's own bounds, which are determined by its CSS 100% width/height.
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * 2;
-  canvas.height = rect.height * 2;
-  ctx.scale(2, 2);
 
-  const w = rect.width;
-  const h = rect.height;
-  const pad = { top: 20, right: 20, bottom: 40, left: 50 };
-  const chartW = w - pad.left - pad.right;
-  const chartH = h - pad.top - pad.bottom;
-
-  const allVals = [...trends.submitted, ...trends.resolved];
-  const maxVal = Math.max(...allVals, 1) * 1.15; // Ensure maxVal > 0
-
-  const spacePerDay = chartW / Math.max(1, trends.labels.length);
-  const barWidth = spacePerDay * 0.35;
-  function xPos(i) { return pad.left + (i * spacePerDay) + (spacePerDay / 2); }
-  function yPos(v) { return pad.top + chartH - (v / maxVal) * chartH; }
-
-  // Grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= 4; i++) {
-    const y = pad.top + (chartH / 4) * i;
-    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
-    ctx.fillStyle = '#64748b';
-    ctx.font = '11px Plus Jakarta Sans, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(Math.round(maxVal - (maxVal / 4) * i), pad.left - 8, y);
+  if (canvas.chartInstance) {
+    canvas.chartInstance.destroy();
   }
 
-  // X labels
-  ctx.fillStyle = '#64748b';
-  ctx.font = '11px Plus Jakarta Sans, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  trends.labels.forEach((label, i) => {
-    if (i % 2 === 0) ctx.fillText(label, xPos(i), h - pad.bottom + 12);
+  // Get current font family
+  const fontFam = getComputedStyle(document.body).fontFamily || "'Plus Jakarta Sans', sans-serif";
+
+  canvas.chartInstance = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: trends.labels,
+      datasets: [
+        {
+          label: 'Submitted',
+          data: trends.submitted,
+          backgroundColor: '#3b82f6',
+          borderRadius: 4,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6
+        },
+        {
+          label: 'Resolved',
+          data: trends.resolved,
+          backgroundColor: '#10b981',
+          borderRadius: 4,
+          barPercentage: 0.8,
+          categoryPercentage: 0.6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'end',
+          labels: { font: { family: fontFam, size: 12 }, color: '#94a3b8', usePointStyle: true, boxWidth: 8 }
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleFont: { family: fontFam, size: 13 },
+          bodyFont: { family: fontFam, size: 13 },
+          padding: 12,
+          cornerRadius: 8,
+          displayColors: true,
+          boxPadding: 4
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: fontFam, size: 11 }, color: '#64748b' }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+          ticks: { 
+            font: { family: fontFam, size: 11 }, 
+            color: '#64748b',
+            stepSize: 1,
+            precision: 0
+          }
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+    }
   });
-
-  // Draw Bars
-  for (let i = 0; i < trends.labels.length; i++) {
-    const subV = trends.submitted[i];
-    const resV = trends.resolved[i];
-    
-    // Submitted Bar
-    if (subV > 0) {
-      const hSub = (subV / maxVal) * chartH;
-      ctx.fillStyle = '#3b82f6';
-      ctx.fillRect(xPos(i) - barWidth - 1, pad.top + chartH - hSub, barWidth, hSub);
-    }
-    
-    // Resolved Bar
-    if (resV > 0) {
-      const hRes = (resV / maxVal) * chartH;
-      ctx.fillStyle = '#10b981';
-      ctx.fillRect(xPos(i) + 1, pad.top + chartH - hRes, barWidth, hRes);
-    }
-  }
-
-  // Legend
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'alphabetic';
-  ctx.font = '12px Inter';
-  const lx = w - pad.right - 180;
-  ctx.fillStyle = '#3b82f6';
-  ctx.fillRect(lx, 8, 12, 12); ctx.fillStyle = '#94a3b8'; ctx.fillText('Submitted', lx + 18, 18);
-  ctx.fillStyle = '#10b981';
-  ctx.fillRect(lx + 95, 8, 12, 12); ctx.fillStyle = '#94a3b8'; ctx.fillText('Resolved', lx + 113, 18);
 }
 
 
