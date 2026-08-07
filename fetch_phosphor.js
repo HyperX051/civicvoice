@@ -55,8 +55,8 @@ const fetchSvg = (name) => {
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         if (res.statusCode === 200) {
-          // Remove width and height attributes so they scale nicely via CSS
-          const cleaned = data.replace(/width=".*?"/, '').replace(/height=".*?"/, '');
+          // Normalize width and height to 1em so they scale perfectly via CSS font-size
+          const cleaned = data.replace(/width=".*?"/, 'width="1em"').replace(/height=".*?"/, 'height="1em"');
           resolve(cleaned);
         } else {
           resolve(`<svg viewBox="0 0 256 256" fill="currentColor"></svg>`);
