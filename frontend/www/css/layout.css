@@ -66,7 +66,7 @@
 .nav-section-title {
   font-size: var(--font-xs);
   font-weight: 700;
-  color: var(--accent-brand);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   padding: var(--space-md) var(--space-sm) var(--space-xs);
@@ -89,12 +89,12 @@
   position: relative;
 }
 .nav-item:hover {
-  background: var(--accent-brand-glow);
-  color: var(--accent-brand);
+  background: var(--border-subtle);
+  color: var(--text-primary);
 }
 .nav-item.active {
-  background: var(--accent-brand-glow);
-  color: var(--accent-brand);
+  background: var(--border-primary);
+  color: var(--text-primary);
   font-weight: 600;
 }
 .nav-item.active::before {
@@ -105,9 +105,9 @@
   transform: translateY(-50%);
   width: 3px;
   height: 22px;
-  background: var(--accent-brand);
+  background: var(--text-primary);
   border-radius: 0 3px 3px 0;
-  box-shadow: 2px 0 8px rgba(37,99,235,0.35);
+  box-shadow: 2px 0 8px rgba(255,255,255,0.1);
 }
 .nav-item svg {
   width: 18px;
@@ -146,7 +146,7 @@
   border: 1.5px solid transparent;
 }
 .sidebar-user:hover {
-  background: var(--accent-brand-glow);
+  background: var(--border-subtle);
   border-color: var(--border-subtle);
 }
 
@@ -175,7 +175,7 @@
 }
 .sidebar-user-role {
   font-size: var(--font-xs);
-  color: var(--accent-brand);
+  color: var(--text-secondary);
   text-transform: capitalize;
   font-weight: 500;
 }
