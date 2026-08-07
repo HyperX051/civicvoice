@@ -22,7 +22,7 @@ export class Router {
 
   /** Resolve current hash to a route */
   resolve() {
-    const hash = window.location.hash.slice(1) || '/login';
+    const hash = window.location.hash.slice(1) || '/';
     
     // Sort routes: exact matches first, parameterized last
     const sorted = [...this.routes].sort((a, b) => {
@@ -43,7 +43,7 @@ export class Router {
     }
 
     // 404 fallback
-    this.navigate('/login');
+    this.navigate('/');
   }
 
   /** Match route pattern to hash, supporting :param syntax */

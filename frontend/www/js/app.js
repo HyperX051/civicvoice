@@ -21,6 +21,7 @@ import {
   renderUsersContent,
   renderProfileContent,
 } from './pages.js';
+import { renderLandingPage } from './landing.js';
 
 // Initialize auth
 auth.init();
@@ -52,6 +53,10 @@ function requireAuth(pageTitle, contentRenderer, allowedRoles = null) {
 }
 
 // ─── Public Routes ───
+router.on('/', () => {
+  renderLandingPage(app, router);
+});
+
 router.on('/login', () => {
   if (auth.isAuthenticated()) {
     router.navigate(auth.hasRole('ADMIN', 'AUTHORITY') ? '/dashboard' : '/issues');
