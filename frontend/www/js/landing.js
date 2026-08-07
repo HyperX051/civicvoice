@@ -163,18 +163,31 @@ export function renderLandingPage(container, router) {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // Start flat, tilt backward when user scrolls down
-      // Initial state is rotateX(0deg) scale(1)
-      const maxRotate = 25;
-      const progress = Math.min(scrollY / (windowHeight * 0.8), 1);
+      // Calculate distance from vertical center of viewport
+      const rect = preview.getBoundingClientRect();
+      const elementCenter = rect.top + (rect.height / 2);
+      const windowCenter = windowHeight / 2;
       
-      const currentRotate = maxRotate * progress;
-      const currentScale = 1.0 - (0.1 * progress);
+      // Distance from center (-1 to 1)
+      // 0 means perfectly centered.
+      // 1 means element is below center.
+      // -1 means element is above center.
+      // We clamp it between -1 and 1.
+      let distanceFromCenter = (elementCenter - windowCenter) / (windowHeight / 2);
+      distanceFromCenter = Math.max(-1, Math.min(1, distanceFromCenter));
+      
+      // We want absolute distance for the rotation (it tilts back symmetrically)
+      const absDistance = Math.abs(distanceFromCenter);
+      
+      // Max rotation is 25deg. When centered, it's 0.
+      const currentRotate = 25 * absDistance;
+      // Scale is 1 when centered, 0.9 when far away.
+      const currentScale = 1.0 - (0.1 * absDistance);
       
       preview.style.transform = `rotateX(${currentRotate}deg) scale(${currentScale})`;
       
-      // Decrease box shadow as it tilts backward
-      const shadowAlpha = 0.2 - (0.1 * progress);
+      // Shadow is strongest when centered (flat)
+      const shadowAlpha = 0.2 - (0.1 * absDistance);
       preview.style.boxShadow = `0 20px 60px rgba(0,0,0,${shadowAlpha}), 0 0 0 1px var(--border-subtle)`;
     };
 
