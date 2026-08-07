@@ -1253,6 +1253,17 @@ export function renderIssueDetailContent(el, router, issueId) {
       const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
       const isAuthor = issue.reporter && authData.user && (issue.reporter.id === authData.user.id);
       const isAdmin = authData.user && (authData.user.role === 'ADMIN' || authData.user.role === 'AUTHORITY');
+      const isSuperAdmin = authData.user && authData.user.role === 'ADMIN';
+
+      let authorities = [];
+      if (isSuperAdmin) {
+        try {
+          const authRes = await fetchWithAuth('/users?size=100');
+          authorities = (authRes.content || []).filter(u => u.role === 'AUTHORITY' && u.isActive);
+        } catch (err) {
+          console.warn('Failed to load authorities', err);
+        }
+      }
       
       const reporterName = issue.anonymous ? 'Anonymous' : (issue.reporter?.fullName || issue.reporter?.name || 'Citizen');
       const mediaHtml = (issue.mediaUrls || issue.media || []).map(m => {
@@ -1370,6 +1381,24 @@ export function renderIssueDetailContent(el, router, issueId) {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </button>
 
+          ${isSuperAdmin ? `
+            <div class="admin-panel" style="background: var(--bg-secondary); border-radius: 12px; padding: 20px; margin-top: 24px; border: 1px solid var(--border-subtle);">
+              <h3 style="margin-top:0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                ${icons.manage} Admin Assignment
+              </h3>
+              <div style="display: flex; gap: 12px; align-items: flex-end;">
+                <div style="flex: 1;">
+                  <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Assign to Authority</label>
+                  <select id="assign-authority-select" class="form-input">
+                    <option value="">-- Select Authority --</option>
+                    ${authorities.map(a => `<option value="${a.id}" ${issue.assignee && issue.assignee.id === a.id ? 'selected' : ''}>${a.name} (${a.department || 'N/A'})</option>`).join('')}
+                  </select>
+                </div>
+                <button class="btn btn-primary" id="btn-assign-issue">Assign</button>
+              </div>
+            </div>
+          ` : ''}
+
           <div class="comments-section">
             <h3>
               <span style="display:inline-flex;width:18px;height:18px;flex-shrink:0;">${icons.messageCircle}</span>
@@ -1426,6 +1455,26 @@ export function renderIssueDetailContent(el, router, issueId) {
           } catch(err) {
             showToast('Update failed: ' + err.message, 'error');
             e.target.value = issue.status; // Revert on failure
+          }
+        });
+      }
+
+      if (isSuperAdmin) {
+        document.getElementById('btn-assign-issue')?.addEventListener('click', async () => {
+          const authId = document.getElementById('assign-authority-select').value;
+          if (!authId) {
+            showToast('Please select an authority', 'error');
+            return;
+          }
+          try {
+            await fetchWithAuth(`/issues/${issueId}/assign`, {
+              method: 'PUT',
+              body: JSON.stringify({ authorityUserId: authId, department: 'Admin Assigned' })
+            });
+            showToast('Issue assigned successfully', 'success');
+            loadIssue();
+          } catch(err) {
+            showToast('Assignment failed: ' + err.message, 'error');
           }
         });
       }
@@ -2441,16 +2490,19 @@ export function renderUsersContent(el, router) {
 
   function render() {
     el.innerHTML = `
-      <div class="page-header">
+      <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h1>User Management</h1>
           <p>Manage user accounts and role assignments</p>
         </div>
+        <button class="btn btn-primary" id="btn-create-official" style="display: flex; align-items: center; gap: 8px;">
+          ${icons.plus} Create Official Account
+        </button>
       </div>
 
       <div class="users-grid">
         ${users.map(user => `
-          <div class="user-card">
+          <div class="user-card" style="${!user.isActive ? 'opacity: 0.6;' : ''}">
             <div class="user-card-avatar">${getInitials(user.name)}</div>
             <div class="user-card-info">
               <div class="user-card-name">${user.name}</div>
@@ -2458,17 +2510,152 @@ export function renderUsersContent(el, router) {
               <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
                 <span class="badge badge-role-${user.role.toLowerCase()}">${user.role}</span>
                 <span class="status-dot ${user.isActive ? 'active' : 'inactive'}"></span>
-                <span class="text-sm text-muted">${user.isActive ? 'Active' : 'Inactive'}</span>
+                <span class="text-sm text-muted">${user.isActive ? 'Active' : 'Suspended'}</span>
               </div>
             </div>
-            <div class="user-card-actions">
-              <!-- Actions disabled in live mode as role updates require complex logic -->
+            <div class="user-card-actions" style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="btn btn-secondary btn-sm toggle-status-btn" data-id="${user.id}" data-active="${user.isActive}">
+                ${user.isActive ? 'Suspend' : 'Activate'}
+              </button>
+              <button class="btn btn-secondary btn-sm text-danger delete-user-btn" data-id="${user.id}">Delete</button>
             </div>
           </div>
         `).join('')}
         ${users.length === 0 ? `<div class="empty-state" style="grid-column: 1/-1">No users found.</div>` : ''}
       </div>
+      
+      <!-- Create Official Modal -->
+      <div id="create-official-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px; padding: 24px;">
+          <h2 style="margin-top: 0; margin-bottom: 20px;">Create Official Account</h2>
+          <form id="create-official-form">
+            <div class="form-group">
+              <label>Role</label>
+              <select id="official-role" class="form-input" required>
+                <option value="AUTHORITY">Authority</option>
+                <option value="NGO">NGO</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Full Name / Org Name</label>
+              <input type="text" id="official-name" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="official-email" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="official-password" class="form-input" required />
+            </div>
+            
+            <div class="form-group" id="dept-group">
+              <label>Department</label>
+              <select id="official-department" class="form-input">
+                <option value="Water Board">Water Board</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Roads & Traffic">Roads & Traffic</option>
+                <option value="Sanitation">Sanitation</option>
+                <option value="Parks">Parks</option>
+              </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+              <button type="button" class="btn btn-secondary" id="btn-cancel-create">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-create">Create Account</button>
+            </div>
+          </form>
+        </div>
+      </div>
     `;
+
+    // Event Listeners
+    const modal = el.querySelector('#create-official-modal');
+    const form = el.querySelector('#create-official-form');
+    const roleSelect = el.querySelector('#official-role');
+    const deptGroup = el.querySelector('#dept-group');
+
+    el.querySelector('#btn-create-official').addEventListener('click', () => {
+      form.reset();
+      modal.classList.remove('hidden');
+    });
+
+    el.querySelector('#btn-cancel-create').addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+    roleSelect.addEventListener('change', () => {
+      if(roleSelect.value === 'AUTHORITY') {
+        deptGroup.style.display = 'block';
+      } else {
+        deptGroup.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = el.querySelector('#btn-submit-create');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div>';
+      
+      const role = roleSelect.value;
+      const endpoint = role === 'AUTHORITY' ? '/auth/authority/register' : '/auth/ngo/register';
+      
+      const payload = {
+        name: el.querySelector('#official-name').value,
+        email: el.querySelector('#official-email').value,
+        password: el.querySelector('#official-password').value
+      };
+      if (role === 'AUTHORITY') {
+        payload.department = el.querySelector('#official-department').value;
+      }
+      
+      try {
+        await fetchWithAuth(endpoint, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        showToast('Account created successfully!', 'success');
+        modal.classList.add('hidden');
+        loadUsers();
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Create Account';
+      }
+    });
+
+    el.querySelectorAll('.toggle-status-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        const isActive = e.target.dataset.active === 'true';
+        try {
+          await fetchWithAuth(`/users/${id}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ isActive: !isActive })
+          });
+          showToast(\`User \${isActive ? 'suspended' : 'activated'}.\`, 'success');
+          loadUsers();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    });
+
+    el.querySelectorAll('.delete-user-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        if(!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+        const id = e.target.dataset.id;
+        try {
+          await fetchWithAuth(`/users/${id}`, { method: 'DELETE' });
+          showToast('User deleted.', 'success');
+          loadUsers();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    });
   }
 
   loadUsers();

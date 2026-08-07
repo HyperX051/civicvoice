@@ -53,4 +53,28 @@ public class UserController {
         User updatedUser = userRepository.save(user);
         return ResponseEntity.ok(UserResponse.from(updatedUser));
     }
+
+    public record UserStatusRequest(boolean isActive) {}
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/status")
+    public ResponseEntity<UserResponse> updateStatus(
+            @org.springframework.web.bind.annotation.PathVariable java.util.UUID id,
+            @RequestBody UserStatusRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(request.isActive());
+        User updatedUser = userRepository.save(user);
+        return ResponseEntity.ok(UserResponse.from(updatedUser));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
+    public ResponseEntity<java.util.Map<String, String>> deleteUser(
+            @org.springframework.web.bind.annotation.PathVariable java.util.UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+        return ResponseEntity.ok(java.util.Map.of("message", "User deleted successfully"));
+    }
 }
