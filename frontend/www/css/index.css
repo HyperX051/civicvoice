@@ -35,10 +35,10 @@
   --border-subtle:    #bfdbfe;
   --border-hover:     rgba(37, 99, 235, 0.7);
 
-  --text-primary:     #0f1f3d;
-  --text-secondary:   #334155;
-  --text-muted:       #6b8ab0;
-  --text-accent:      #2563eb;
+  --text-primary:     #000000;
+  --text-secondary:   #000000;
+  --text-muted:       #000000;
+  --text-accent:      #000000;
 
   --accent-blue:      #2563eb;
   --accent-blue-dark: #1d4ed8;
