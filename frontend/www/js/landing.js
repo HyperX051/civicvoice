@@ -56,15 +56,38 @@ export function renderLandingPage(container, router) {
           </div>
           <div class="app-preview-content">
             <div class="mock-sidebar">
-              <div class="mock-nav-item active"></div>
-              <div class="mock-nav-item"></div>
-              <div class="mock-nav-item"></div>
+              <div class="mock-nav-item active">
+                <div style="width: 60%; margin: 12px; height: 12px; border-radius: 4px; background: var(--border-subtle);"></div>
+              </div>
+              <div class="mock-nav-item">
+                <div style="width: 40%; margin: 12px; height: 12px; border-radius: 4px; background: var(--bg-card);"></div>
+              </div>
+              <div class="mock-nav-item">
+                <div style="width: 70%; margin: 12px; height: 12px; border-radius: 4px; background: var(--bg-card);"></div>
+              </div>
             </div>
             <div class="mock-main">
-              <div class="mock-card mock-hero-card"></div>
+              <div class="mock-card mock-hero-card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <div style="width: 30%; height: 24px; border-radius: 6px; background: var(--border-subtle);"></div>
+                <div style="width: 100%; height: 60px; border-radius: 8px; background: var(--bg-card); display: flex; align-items: flex-end; padding: 8px; gap: 4px;">
+                  <div style="width: 10%; height: 40%; background: var(--accent-brand); border-radius: 4px;"></div>
+                  <div style="width: 10%; height: 70%; background: var(--accent-brand); border-radius: 4px;"></div>
+                  <div style="width: 10%; height: 50%; background: var(--accent-brand); border-radius: 4px;"></div>
+                  <div style="width: 10%; height: 100%; background: var(--accent-brand); border-radius: 4px;"></div>
+                  <div style="width: 10%; height: 80%; background: var(--accent-brand); border-radius: 4px;"></div>
+                </div>
+              </div>
               <div class="mock-grid">
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
+                <div class="mock-card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="width: 80%; height: 12px; background: var(--border-subtle); border-radius: 4px;"></div>
+                  <div style="width: 60%; height: 12px; background: var(--border-subtle); border-radius: 4px;"></div>
+                  <div style="width: 90%; height: 12px; background: var(--border-subtle); border-radius: 4px;"></div>
+                </div>
+                <div class="mock-card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--border-subtle);"></div>
+                  <div style="width: 70%; height: 12px; background: var(--border-subtle); border-radius: 4px;"></div>
+                  <div style="width: 50%; height: 12px; background: var(--border-subtle); border-radius: 4px;"></div>
+                </div>
               </div>
             </div>
           </div>
