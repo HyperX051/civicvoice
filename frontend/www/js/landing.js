@@ -163,18 +163,18 @@ export function renderLandingPage(container, router) {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // Start rotating when user scrolls down
-      // Initial state is rotateX(25deg) scale(0.9)
+      // Start flat, tilt backward when user scrolls down
+      // Initial state is rotateX(0deg) scale(1)
       const maxRotate = 25;
       const progress = Math.min(scrollY / (windowHeight * 0.8), 1);
       
-      const currentRotate = maxRotate - (maxRotate * progress);
-      const currentScale = 0.9 + (0.1 * progress);
+      const currentRotate = maxRotate * progress;
+      const currentScale = 1.0 - (0.1 * progress);
       
       preview.style.transform = `rotateX(${currentRotate}deg) scale(${currentScale})`;
       
-      // Enhance box shadow as it flattens out
-      const shadowAlpha = 0.1 + (0.1 * progress);
+      // Decrease box shadow as it tilts backward
+      const shadowAlpha = 0.2 - (0.1 * progress);
       preview.style.boxShadow = `0 20px 60px rgba(0,0,0,${shadowAlpha}), 0 0 0 1px var(--border-subtle)`;
     };
 
