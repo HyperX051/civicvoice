@@ -12,6 +12,31 @@ import {
 import { fetchWithAuth, API_BASE_URL } from './api.js';
 import { locationService } from './location.js';
 
+window.openLightbox = function(url) {
+  const existing = document.getElementById('media-lightbox');
+  if (existing) existing.remove();
+  
+  const lightbox = document.createElement('div');
+  lightbox.id = 'media-lightbox';
+  lightbox.style = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); cursor: pointer;';
+  
+  const img = document.createElement('img');
+  img.src = url;
+  img.style = 'max-width: 90%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: default;';
+  
+  img.onclick = (e) => e.stopPropagation();
+  lightbox.onclick = () => lightbox.remove();
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="32" height="32"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+  closeBtn.style = 'position: absolute; top: 24px; right: 24px; background: none; border: none; cursor: pointer; padding: 8px;';
+  closeBtn.onclick = () => lightbox.remove();
+  
+  lightbox.appendChild(img);
+  lightbox.appendChild(closeBtn);
+  document.body.appendChild(lightbox);
+};
+
 
 // ─────────────────────────────────────────────
 // LOGIN PAGE
@@ -1266,16 +1291,21 @@ export function renderIssueDetailContent(el, router, issueId) {
       }
       
       const reporterName = issue.anonymous ? 'Anonymous' : (issue.reporter?.fullName || issue.reporter?.name || 'Citizen');
-      const mediaHtml = (issue.mediaUrls || issue.media || []).map(m => {
-        let url = m.url || m;
-        if (url.startsWith('/')) {
-            url = API_BASE_URL.replace('/api/v1', '') + url;
-        }
-        if (url.endsWith('.mp4')) {
-          return `<video src="${url}" controls style="max-width: 100%; border-radius: var(--radius-md); margin-top: 12px;"></video>`;
-        }
-        return `<img src="${url}" style="max-width: 100%; border-radius: var(--radius-md); margin-top: 12px; display: block; border: 1.5px solid var(--border-subtle);" alt="Issue media" />`;
-      }).join('');
+      const mediaList = (issue.mediaUrls || issue.media || []);
+      const mediaHtml = mediaList.length > 0 ? `
+        <div class="issue-media-gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
+          ${mediaList.map((m, idx) => {
+            let url = m.url || m;
+            if (url.startsWith('/')) {
+                url = API_BASE_URL.replace('/api/v1', '') + url;
+            }
+            if (url.toLowerCase().includes('.mp4')) {
+              return `<video src="${url}" controls style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 1.5px solid var(--border-subtle);"></video>`;
+            }
+            return `<img src="${url}" class="issue-media-item" data-index="${idx}" style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid var(--border-subtle); transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" alt="Issue media" onclick="window.openLightbox('${url}')" />`;
+          }).join('')}
+        </div>
+      ` : '';
 
       el.innerHTML = `
         <div class="issue-detail animate-fade-in">
