@@ -123,11 +123,11 @@ export function renderLandingPage(container, router) {
       const currentRotate = maxRotate - (maxRotate * progress);
       const currentScale = 0.9 + (0.1 * progress);
       
-      preview.style.transform = \`rotateX(\${currentRotate}deg) scale(\${currentScale})\`;
+      preview.style.transform = `rotateX(${currentRotate}deg) scale(${currentScale})`;
       
       // Enhance box shadow as it flattens out
       const shadowAlpha = 0.1 + (0.1 * progress);
-      preview.style.boxShadow = \`0 20px 60px rgba(0,0,0,\${shadowAlpha}), 0 0 0 1px var(--border-subtle)\`;
+      preview.style.boxShadow = `0 20px 60px rgba(0,0,0,${shadowAlpha}), 0 0 0 1px var(--border-subtle)`;
     };
 
     window.addEventListener('scroll', handleScroll);
