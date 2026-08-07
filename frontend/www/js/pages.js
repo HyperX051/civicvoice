@@ -1675,36 +1675,46 @@ export async function renderDashboardContent(el, router) {
         <p>Real-time overview of civic issue management performance</p>
       </div>
     </div>
-    <div class="stats-grid">
-      <div class="stat-card blue">
-        <div class="stat-card-icon">${icons.issues}</div>
-        <div class="stat-card-value" id="count-total">…</div>
-        <div class="stat-card-label">Total Issues</div>
+    <div style="display: flex; flex-wrap: wrap; gap: var(--space-xl); margin-top: var(--space-xl);">
+      <!-- Chart Column -->
+      <div class="dashboard-panel" style="flex: 2 1 500px;">
+        <div class="panel-header">
+          <div class="panel-title">Trend Analytics</div>
+          <div class="panel-subtitle">Issues submitted vs resolved over the last 14 days</div>
+        </div>
+        <div style="padding: var(--space-lg); height: 350px; width: 100%; position: relative;">
+          <canvas id="trend-chart" style="width: 100%; height: 100%;"></canvas>
+        </div>
       </div>
-      <div class="stat-card teal">
-        <div class="stat-card-icon">${icons.checkCircle}</div>
-        <div class="stat-card-value" id="count-resolved">…</div>
-        <div class="stat-card-label">Resolved</div>
-      </div>
-      <div class="stat-card amber">
-        <div class="stat-card-icon">${icons.alertTriangle}</div>
-        <div class="stat-card-value" id="count-open">…</div>
-        <div class="stat-card-label">Open Issues</div>
-      </div>
-      <div class="stat-card purple">
-        <div class="stat-card-icon">${icons.activity}</div>
-        <div class="stat-card-value" id="count-inprog">…</div>
-        <div class="stat-card-label">In Progress</div>
-      </div>
-    </div>
 
-    <div class="dashboard-panel full-width" style="margin-top: var(--space-xl);">
-      <div class="panel-header">
-        <div class="panel-title">Trend Analytics</div>
-        <div class="panel-subtitle">Issues submitted vs resolved over the last 14 days</div>
-      </div>
-      <div style="padding: var(--space-lg); height: 300px; width: 100%; position: relative;">
-        <canvas id="trend-chart" style="width: 100%; height: 100%;"></canvas>
+      <!-- Stats Column -->
+      <div class="dashboard-panel" style="flex: 1 1 300px;">
+        <div class="panel-header">
+          <div class="panel-title">Quick Overview</div>
+          <div class="panel-subtitle">Current status of all reported issues</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); padding: var(--space-lg);">
+          <div class="stat-card blue" style="padding: var(--space-md);">
+            <div class="stat-card-icon" style="margin-bottom: 8px;">${icons.issues}</div>
+            <div class="stat-card-value" id="count-total" style="font-size: 1.5rem;">…</div>
+            <div class="stat-card-label" style="font-size: 0.75rem;">Total</div>
+          </div>
+          <div class="stat-card teal" style="padding: var(--space-md);">
+            <div class="stat-card-icon" style="margin-bottom: 8px;">${icons.checkCircle}</div>
+            <div class="stat-card-value" id="count-resolved" style="font-size: 1.5rem;">…</div>
+            <div class="stat-card-label" style="font-size: 0.75rem;">Resolved</div>
+          </div>
+          <div class="stat-card amber" style="padding: var(--space-md);">
+            <div class="stat-card-icon" style="margin-bottom: 8px;">${icons.alertTriangle}</div>
+            <div class="stat-card-value" id="count-open" style="font-size: 1.5rem;">…</div>
+            <div class="stat-card-label" style="font-size: 0.75rem;">Open</div>
+          </div>
+          <div class="stat-card purple" style="padding: var(--space-md);">
+            <div class="stat-card-icon" style="margin-bottom: 8px;">${icons.activity}</div>
+            <div class="stat-card-value" id="count-inprog" style="font-size: 1.5rem;">…</div>
+            <div class="stat-card-label" style="font-size: 0.75rem;">In Prog.</div>
+          </div>
+        </div>
       </div>
     </div>
 
