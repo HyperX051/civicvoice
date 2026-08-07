@@ -12,8 +12,9 @@ export function renderLandingPage(container, router) {
   container.innerHTML = `
     <div class="landing-page">
       <nav class="landing-nav">
-        <a href="#/" class="brand">
-          ${icons.globe} CivicVoice
+        <a href="#/" class="brand" style="display: flex; align-items: center; gap: 8px;">
+          <img src="img/logo.png" style="width: 24px; height: 24px; border-radius: 6px;" alt="Logo" />
+          CivicVoice
         </a>
         <div class="landing-nav-actions">
           ${isAuthenticated 
@@ -59,7 +60,7 @@ export function renderLandingPage(container, router) {
               <!-- Fake Sidebar -->
               <aside class="sidebar" style="position: absolute; top: 0; left: 0; height: 100%; border-right: 1px solid var(--border-subtle);">
                 <div class="sidebar-header" style="padding: 24px; display: flex; align-items: center; gap: 12px;">
-                  <div class="sidebar-logo" style="width:32px; height:32px; border-radius:8px; background:var(--accent-brand);"></div>
+                  <div class="sidebar-logo" style="width:32px; height:32px; border-radius:8px;"><img src="img/logo.png" style="width: 100%; height: 100%; border-radius: 8px;" alt="Logo" /></div>
                   <span class="sidebar-brand">CivicVoice</span>
                 </div>
                 <nav class="sidebar-nav" style="padding: 0 16px;">
