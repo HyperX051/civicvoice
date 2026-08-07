@@ -38,11 +38,11 @@
   border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  background: var(--accent-blue-glow);
-  color: var(--accent-blue);
+  background: var(--accent-brand-glow);
+  color: var(--accent-brand);
 }
 .audit-action.create { background: rgba(16,185,129,0.1); color: var(--success); }
-.audit-action.update { background: rgba(79,109,245,0.1); color: var(--accent-blue); }
+.audit-action.update { background: rgba(79,109,245,0.1); color: var(--accent-brand); }
 .audit-action.delete { background: rgba(239,68,68,0.08); color: var(--error); }
 .audit-action.status { background: rgba(139,92,246,0.1); color: var(--accent-purple); }
 
@@ -124,7 +124,7 @@
   width: 48px;
   height: 48px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent-brand), var(--accent-purple));
   display: flex;
   align-items: center;
   justify-content: center;

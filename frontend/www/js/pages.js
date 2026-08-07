@@ -1815,7 +1815,7 @@ function drawTrendChart(trends) {
         {
           label: 'Submitted',
           data: trends.submitted,
-          backgroundColor: '#3b82f6',
+          backgroundColor: '#EDEDED',
           borderRadius: 4,
           barPercentage: 0.8,
           categoryPercentage: 0.6
@@ -1823,7 +1823,7 @@ function drawTrendChart(trends) {
         {
           label: 'Resolved',
           data: trends.resolved,
-          backgroundColor: '#10b981',
+          backgroundColor: '#3ECF8E',
           borderRadius: 4,
           barPercentage: 0.8,
           categoryPercentage: 0.6
@@ -1838,10 +1838,14 @@ function drawTrendChart(trends) {
           display: true,
           position: 'top',
           align: 'end',
-          labels: { font: { family: fontFam, size: 12 }, color: '#94a3b8', usePointStyle: true, boxWidth: 8 }
+          labels: { font: { family: fontFam, size: 12 }, color: '#8B949E', usePointStyle: true, boxWidth: 8 }
         },
         tooltip: {
-          backgroundColor: '#1e293b',
+          backgroundColor: '#232323',
+          titleColor: '#EDEDED',
+          bodyColor: '#EDEDED',
+          borderColor: '#3E3E3E',
+          borderWidth: 1,
           titleFont: { family: fontFam, size: 13 },
           bodyFont: { family: fontFam, size: 13 },
           padding: 12,
@@ -1853,14 +1857,14 @@ function drawTrendChart(trends) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { family: fontFam, size: 11 }, color: '#64748b' }
+          ticks: { font: { family: fontFam, size: 11 }, color: '#8B949E' }
         },
         y: {
           beginAtZero: true,
-          grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+          grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
           ticks: { 
             font: { family: fontFam, size: 11 }, 
-            color: '#64748b',
+            color: '#8B949E',
             stepSize: 1,
             precision: 0
           }

@@ -48,12 +48,12 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: var(--accent-blue-glow);
+  background: var(--accent-brand-glow);
   border: 1.5px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-blue);
+  color: var(--accent-brand);
   flex-shrink: 0;
 }
 .issue-card-icon-box svg {
@@ -138,14 +138,14 @@
   border: 1.5px solid var(--border-subtle);
 }
 .upvote-btn:hover {
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
-  background: var(--accent-blue-glow);
+  color: var(--accent-brand);
+  border-color: var(--accent-brand);
+  background: var(--accent-brand-glow);
 }
 .upvote-btn.upvoted {
-  color: var(--accent-blue);
-  background: var(--accent-blue-glow);
-  border-color: var(--accent-blue);
+  color: var(--accent-brand);
+  background: var(--accent-brand-glow);
+  border-color: var(--accent-brand);
 }
 .upvote-btn svg { width: 14px; height: 14px; }
 
@@ -166,15 +166,15 @@
   border-radius: var(--radius-full);
   font-size: var(--font-xs);
   font-weight: 600;
-  color: var(--accent-blue);
-  background: var(--accent-blue-glow);
+  color: var(--accent-brand);
+  background: var(--accent-brand-glow);
   border: 1.5px solid var(--border-subtle);
   transition: all var(--transition-fast);
   cursor: pointer;
 }
 .view-on-maps-btn:hover {
   background: rgba(37,99,235,0.15);
-  border-color: var(--accent-blue);
+  border-color: var(--accent-brand);
 }
 .view-on-maps-btn svg { width: 12px; height: 12px; }
 
@@ -202,9 +202,9 @@
   gap: 6px;
 }
 .issue-detail .btn-ghost:hover {
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
-  background: var(--accent-blue-glow);
+  border-color: var(--accent-brand);
+  color: var(--accent-brand);
+  background: var(--accent-brand-glow);
 }
 
 .issue-detail-header {
@@ -268,8 +268,8 @@
   align-items: center;
   gap: var(--space-sm);
   padding: 10px 20px;
-  background: var(--accent-blue-glow);
-  color: var(--accent-blue);
+  background: var(--accent-brand-glow);
+  color: var(--accent-brand);
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-md);
   font-size: var(--font-sm);
@@ -280,7 +280,7 @@
 }
 .view-maps-detail-btn:hover {
   background: rgba(37,99,235,0.15);
-  border-color: var(--accent-blue);
+  border-color: var(--accent-brand);
   transform: translateY(-1px);
 }
 .view-maps-detail-btn svg { width: 16px; height: 16px; }
@@ -344,7 +344,7 @@
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent-brand), var(--accent-purple));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -406,7 +406,7 @@
   border-color: var(--border-subtle);
 }
 .issue-filters select:focus {
-  border-color: var(--accent-blue);
+  border-color: var(--accent-brand);
 }
 
 /* ─── View Toggle ─── */
@@ -432,7 +432,7 @@
 }
 .view-toggle-btn:hover { color: var(--text-secondary); background: var(--bg-card); }
 .view-toggle-btn.active {
-  background: var(--accent-blue);
+  background: var(--accent-brand);
   color: white;
   box-shadow: 0 1px 4px rgba(79,109,245,0.3);
 }
@@ -505,7 +505,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--accent-blue);
+  color: var(--accent-brand);
 }
 
 .timeline-container {
@@ -560,8 +560,8 @@
 }
 
 .timeline-step.current .timeline-icon {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background: var(--accent-brand);
+  border-color: var(--accent-brand);
   box-shadow: 0 0 0 4px rgba(13, 138, 188, 0.2);
 }
 
