@@ -4,6 +4,7 @@
 
 import { Router } from './router.js';
 import { auth } from './auth.js';
+import { locationService } from './location.js';
 import {
   renderLoginPage,
   renderRegisterPage,
@@ -29,6 +30,9 @@ const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.setAttribute('data-theme', 'dark');
 }
+
+// Initialize location service (non-blocking — starts requesting permission in background)
+locationService.init().catch(() => {});
 
 const app = document.getElementById('app');
 const router = new Router();
