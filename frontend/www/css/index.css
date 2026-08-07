@@ -627,9 +627,7 @@ select {
 .profile-menu-icon {
   width: 36px;
   height: 36px;
-  background: var(--accent-brand-glow);
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
+  background: transparent;
   color: var(--text-primary);
   margin-right: 14px;
   display: flex;

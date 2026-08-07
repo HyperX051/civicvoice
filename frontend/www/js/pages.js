@@ -2531,7 +2531,7 @@ export function renderProfileContent(el, router) {
         
         <!-- Row: Edit About -->
         <div class="profile-menu-item" id="edit-about-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
-          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.info}</div>
           <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
             <div style="font-size: 15px; font-weight: 500;">My Activity (About)</div>
             <div style="font-size: 13px; color: var(--text-muted);" id="display-about">${user?.about || 'Active Citizen 🌿'}</div>
@@ -2541,7 +2541,7 @@ export function renderProfileContent(el, router) {
 
         <!-- Row: Email -->
         <div class="profile-menu-item" style="border-bottom: 1px solid var(--border-subtle); cursor: default; padding: 16px;">
-          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.mail}</div>
           <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
             <div style="font-size: 15px; font-weight: 500;">Email Address</div>
             <div style="font-size: 13px; color: var(--text-muted);">${user?.email || 'N/A'}</div>
@@ -2550,7 +2550,7 @@ export function renderProfileContent(el, router) {
 
         <!-- Row: Theme -->
         <div class="profile-menu-item" id="menu-theme" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
-          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></div>
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.sun}</div>
           <div class="profile-menu-text" style="flex: 1; font-size: 15px; font-weight: 500;">Theme Settings</div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
