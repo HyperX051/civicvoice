@@ -2635,7 +2635,7 @@ export function renderUsersContent(el, router) {
             method: 'PUT',
             body: JSON.stringify({ isActive: !isActive })
           });
-          showToast(\`User \${isActive ? 'suspended' : 'activated'}.\`, 'success');
+          showToast(`User ${isActive ? 'suspended' : 'activated'}.`, 'success');
           loadUsers();
         } catch (err) {
           showToast(err.message, 'error');
