@@ -575,7 +575,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
 // ─────────────────────────────────────────────
 // ISSUES PAGE (Citizen)
 // ─────────────────────────────────────────────
-export function renderIssuesContent(el, router) {
+export function renderIssuesContent(el, router, showMyIssues = false) {
   let viewMode = 'grid';
   let filterStatus = '';
   let filterCategory = '';
@@ -590,7 +590,9 @@ export function renderIssuesContent(el, router) {
       if (filterStatus) params.set('status', filterStatus);
       if (filterCategory) params.set('category', filterCategory);
       params.set('size', '50');
-      const data = await fetchWithAuth('/issues?' + params.toString());
+      
+      const endpoint = showMyIssues ? '/issues/my' : '/issues';
+      const data = await fetchWithAuth(`${endpoint}?` + params.toString());
       issues = data.content || [];
     } catch(e) {
       showToast('Failed to load issues: ' + e.message, 'error');
@@ -2936,8 +2938,8 @@ export function renderProfileContent(el, router) {
   });
 
   document.getElementById('menu-my-issues')?.addEventListener('click', () => {
-    // Navigate to citizen issues/dashboard or show toast
-    router.navigate('/citizen');
+    // Navigate to user's issues
+    router.navigate('/issues/my');
   });
 
   document.getElementById('profile-logout-btn')?.addEventListener('click', () => {

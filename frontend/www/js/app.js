@@ -96,6 +96,10 @@ router.on('/issues', () => {
   renderLayout(app, router, 'Issues', renderIssuesContent);
 });
 
+router.on('/issues/my', () => {
+  requireAuth('My Issues', (el, r) => renderIssuesContent(el, r, true), ['CITIZEN', 'AUTHORITY', 'ADMIN']);
+});
+
 router.on('/issues/:id', (params) => {
   renderLayout(app, router, 'Issue Detail', (el, r) => renderIssueDetailContent(el, r, params.id));
 });
