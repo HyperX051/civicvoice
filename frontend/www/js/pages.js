@@ -297,8 +297,13 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
           ${role === 'ADMIN' ? adminNav : ''}
         </nav>
         <div class="sidebar-footer">
-          <div class="sidebar-user" id="sidebar-user-btn">
-            <div class="sidebar-avatar">${getInitials(user?.name || 'A')}</div>
+          <div class="sidebar-user" id="sidebar-user-btn" style="cursor: pointer; transition: opacity 0.2s;">
+            <div class="sidebar-avatar">
+              ${user?.avatarUrl 
+                ? `<img src="${user.avatarUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />` 
+                : getInitials(user?.name || 'A')
+              }
+            </div>
             <div class="sidebar-user-info">
               <div class="sidebar-user-name">${user?.name || 'Anonymous Citizen'}</div>
               <div class="sidebar-user-role">${capitalize(user?.role || 'Guest')}</div>
@@ -351,6 +356,11 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
   // Render page content
   const contentEl = document.getElementById('page-content');
   contentRenderer(contentEl, router);
+
+
+  document.getElementById('sidebar-user-btn')?.addEventListener('click', () => {
+    if (user) router.navigate('/profile');
+  });
 
   // Navigation handlers
   document.querySelectorAll('[data-nav]').forEach(item => {
