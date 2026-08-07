@@ -44,11 +44,6 @@
 .stat-card.purple::after { background: var(--accent-purple); }
 .stat-card.amber::after { background: var(--accent-amber); }
 
-/* Left accent border */
-.stat-card.blue { border-left: 4px solid var(--accent-brand); }
-.stat-card.teal { border-left: 4px solid var(--accent-teal); }
-.stat-card.purple { border-left: 4px solid var(--accent-purple); }
-.stat-card.amber { border-left: 4px solid var(--accent-amber); }
 
 .stat-card-icon {
   width: 44px;
