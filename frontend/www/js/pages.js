@@ -364,12 +364,42 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
   // Theme toggle
   document.getElementById('theme-toggle-btn')?.addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
+    const newTheme = isDark ? 'light' : 'dark';
+    
+    if (newTheme === 'light') {
       document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('theme', 'light');
     } else {
       document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
+    }
+    localStorage.setItem('theme', newTheme);
+    
+    // Update chart colors dynamically if chart exists
+    const canvas = document.getElementById('trend-chart');
+    if (canvas && canvas.chartInstance) {
+      const isNowDark = newTheme === 'dark';
+      const chart = canvas.chartInstance;
+      
+      chart.data.datasets[0].backgroundColor = isNowDark ? '#EDEDED' : '#475569';
+      chart.data.datasets[1].backgroundColor = isNowDark ? '#3ECF8E' : '#10b981';
+      
+      if (chart.options.plugins.legend) {
+        chart.options.plugins.legend.labels.color = isNowDark ? '#8B949E' : '#6B6B6B';
+      }
+      
+      if (chart.options.plugins.tooltip) {
+        chart.options.plugins.tooltip.backgroundColor = isNowDark ? '#232323' : '#ffffff';
+        chart.options.plugins.tooltip.titleColor = isNowDark ? '#EDEDED' : '#1A1A1A';
+        chart.options.plugins.tooltip.bodyColor = isNowDark ? '#EDEDED' : '#1A1A1A';
+        chart.options.plugins.tooltip.borderColor = isNowDark ? '#3E3E3E' : '#e5e7eb';
+      }
+      
+      if (chart.options.scales.x && chart.options.scales.y) {
+        chart.options.scales.x.ticks.color = isNowDark ? '#8B949E' : '#6B6B6B';
+        chart.options.scales.y.ticks.color = isNowDark ? '#8B949E' : '#6B6B6B';
+        chart.options.scales.y.grid.color = isNowDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+      }
+      
+      chart.update();
     }
   });
 
