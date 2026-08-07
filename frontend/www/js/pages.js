@@ -1807,6 +1807,10 @@ function drawTrendChart(trends) {
   // Get current font family
   const fontFam = getComputedStyle(document.body).fontFamily || "'Plus Jakarta Sans', sans-serif";
 
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const colorSubmitted = isDark ? '#EDEDED' : '#475569';
+  const colorResolved = isDark ? '#3ECF8E' : '#10b981';
+
   canvas.chartInstance = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -1815,7 +1819,7 @@ function drawTrendChart(trends) {
         {
           label: 'Submitted',
           data: trends.submitted,
-          backgroundColor: '#EDEDED',
+          backgroundColor: colorSubmitted,
           borderRadius: 4,
           barPercentage: 0.8,
           categoryPercentage: 0.6
@@ -1823,7 +1827,7 @@ function drawTrendChart(trends) {
         {
           label: 'Resolved',
           data: trends.resolved,
-          backgroundColor: '#3ECF8E',
+          backgroundColor: colorResolved,
           borderRadius: 4,
           barPercentage: 0.8,
           categoryPercentage: 0.6
@@ -1838,13 +1842,13 @@ function drawTrendChart(trends) {
           display: true,
           position: 'top',
           align: 'end',
-          labels: { font: { family: fontFam, size: 12 }, color: '#8B949E', usePointStyle: true, boxWidth: 8 }
+          labels: { font: { family: fontFam, size: 12 }, color: isDark ? '#8B949E' : '#6B6B6B', usePointStyle: true, boxWidth: 8 }
         },
         tooltip: {
-          backgroundColor: '#232323',
-          titleColor: '#EDEDED',
-          bodyColor: '#EDEDED',
-          borderColor: '#3E3E3E',
+          backgroundColor: isDark ? '#232323' : '#ffffff',
+          titleColor: isDark ? '#EDEDED' : '#1A1A1A',
+          bodyColor: isDark ? '#EDEDED' : '#1A1A1A',
+          borderColor: isDark ? '#3E3E3E' : '#e5e7eb',
           borderWidth: 1,
           titleFont: { family: fontFam, size: 13 },
           bodyFont: { family: fontFam, size: 13 },
@@ -1857,7 +1861,7 @@ function drawTrendChart(trends) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { family: fontFam, size: 11 }, color: '#8B949E' }
+          ticks: { font: { family: fontFam, size: 11 }, color: isDark ? '#8B949E' : '#6B6B6B' }
         },
         y: {
           beginAtZero: true,
