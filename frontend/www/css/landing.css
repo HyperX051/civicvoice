@@ -121,6 +121,12 @@
   box-shadow: var(--shadow-sm);
 }
 
+.hero-pill svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 .hero-title {
   font-size: clamp(40px, 6vw, 72px);
   font-weight: 800;
