@@ -607,8 +607,8 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
     el.innerHTML = `
       <div class="page-header">
         <div>
-          <h1>Community Issues</h1>
-          <p>Report, track, and upvote civic issues in your area</p>
+          <h1>${showMyIssues ? 'My Issues' : 'Community Issues'}</h1>
+          <p>${showMyIssues ? 'Track the issues you have reported' : 'Report, track, and upvote civic issues in your area'}</p>
         </div>
         <div class="page-actions">
           <div class="view-toggle">
@@ -627,7 +627,7 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
 
       <div class="issue-tabs-container" style="overflow-x: auto; white-space: nowrap; margin-bottom: var(--space-lg); padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">
         <div class="tabs" style="border: none; background: transparent; padding: 0;">
-          <button class="tab ${filterStatus === '' ? 'active' : ''}" data-status="">All Issues</button>
+          <button class="tab ${filterStatus === '' ? 'active' : ''}" data-status="">All</button>
           <button class="tab ${filterStatus === 'OPEN' ? 'active' : ''}" data-status="OPEN">Open</button>
           <button class="tab ${filterStatus === 'ASSIGNED' ? 'active' : ''}" data-status="ASSIGNED">Assigned</button>
           <button class="tab ${filterStatus === 'IN_PROGRESS' ? 'active' : ''}" data-status="IN_PROGRESS">In Progress</button>
@@ -1463,7 +1463,13 @@ export function renderIssueDetailContent(el, router, issueId) {
         </div>
       `;
 
-      document.getElementById('back-to-issues').addEventListener('click', () => router.navigate(isAdmin ? '/issues/manage' : '/issues'));
+      document.getElementById('back-to-issues').addEventListener('click', () => {
+        if (window.history.length > 2) {
+          window.history.back();
+        } else {
+          router.navigate(isAdmin ? '/issues/manage' : '/issues');
+        }
+      });
       
       document.getElementById('view-maps-detail-btn')?.addEventListener('click', () => {
         openGoogleMaps(issue.latitude, issue.longitude);
@@ -2744,7 +2750,7 @@ export function renderProfileContent(el, router) {
         <div class="profile-menu-item" id="edit-name-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
           <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.user}</div>
           <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
-            <div style="font-size: 15px; font-weight: 500;">My Profile (Name)</div>
+            <div style="font-size: 15px; font-weight: 500;">Full Name</div>
             <div style="font-size: 13px; color: var(--text-muted);" id="display-name">${user?.name || 'Anonymous User'}</div>
           </div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
@@ -2754,7 +2760,7 @@ export function renderProfileContent(el, router) {
         <div class="profile-menu-item" id="edit-about-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
           <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.info}</div>
           <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
-            <div style="font-size: 15px; font-weight: 500;">My Activity (About)</div>
+            <div style="font-size: 15px; font-weight: 500;">About Me</div>
             <div style="font-size: 13px; color: var(--text-muted);" id="display-about">${user?.about || 'Active Citizen 🌿'}</div>
           </div>
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
