@@ -169,20 +169,26 @@ export function renderLandingPage(container, router) {
       const windowCenter = windowHeight / 2;
       
       // Distance from center (-1 to 1)
-      // 0 means perfectly centered.
-      // 1 means element is below center.
-      // -1 means element is above center.
-      // We clamp it between -1 and 1.
       let distanceFromCenter = (elementCenter - windowCenter) / (windowHeight / 2);
       distanceFromCenter = Math.max(-1, Math.min(1, distanceFromCenter));
       
+      // Add a 'dead zone' so it stays perfectly flat when mostly on screen
+      const deadZone = 0.2; // 20% of the center screen is perfectly flat
+      let adjustedDistance = 0;
+      
+      if (Math.abs(distanceFromCenter) > deadZone) {
+        // Remap the remaining distance (from deadZone to 1) to be (0 to 1)
+        const sign = Math.sign(distanceFromCenter);
+        adjustedDistance = sign * ((Math.abs(distanceFromCenter) - deadZone) / (1 - deadZone));
+      }
+      
       // We want absolute distance for scaling and shadow
-      const absDistance = Math.abs(distanceFromCenter);
+      const absDistance = Math.abs(adjustedDistance);
       
       // Dynamic rotation: 
-      // Element at bottom (distance = 1): top back, bottom front (rotateX +25)
-      // Element at top (distance = -1): top front, bottom back (rotateX -25)
-      const currentRotate = 25 * distanceFromCenter;
+      // Element at bottom: top back, bottom front (rotateX +25)
+      // Element at top: top front, bottom back (rotateX -25)
+      const currentRotate = 25 * adjustedDistance;
       
       // Scale is 1 when centered, 0.9 when far away.
       const currentScale = 1.0 - (0.1 * absDistance);
