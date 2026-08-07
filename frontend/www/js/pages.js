@@ -1806,7 +1806,9 @@ function drawTrendChart(trends) {
   const allVals = [...trends.submitted, ...trends.resolved];
   const maxVal = Math.max(...allVals, 1) * 1.15; // Ensure maxVal > 0
 
-  function xPos(i) { return pad.left + (i / Math.max(1, trends.labels.length - 1)) * chartW; }
+  const spacePerDay = chartW / Math.max(1, trends.labels.length);
+  const barWidth = spacePerDay * 0.35;
+  function xPos(i) { return pad.left + (i * spacePerDay) + (spacePerDay / 2); }
   function yPos(v) { return pad.top + chartH - (v / maxVal) * chartH; }
 
   // Grid lines
@@ -1816,7 +1818,7 @@ function drawTrendChart(trends) {
     const y = pad.top + (chartH / 4) * i;
     ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
     ctx.fillStyle = '#64748b';
-    ctx.font = '11px Inter';
+    ctx.font = '11px Plus Jakarta Sans, sans-serif';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillText(Math.round(maxVal - (maxVal / 4) * i), pad.left - 8, y);
@@ -1824,63 +1826,32 @@ function drawTrendChart(trends) {
 
   // X labels
   ctx.fillStyle = '#64748b';
-  ctx.font = '11px Inter';
+  ctx.font = '11px Plus Jakarta Sans, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   trends.labels.forEach((label, i) => {
     if (i % 2 === 0) ctx.fillText(label, xPos(i), h - pad.bottom + 12);
   });
 
-  // Submitted area gradient
-  const gradBlue = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
-  gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
-  gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-  ctx.fillStyle = gradBlue;
-  ctx.beginPath();
-  ctx.moveTo(xPos(0), yPos(0));
-  trends.submitted.forEach((v, i) => ctx.lineTo(xPos(i), yPos(v)));
-  ctx.lineTo(xPos(trends.submitted.length - 1), pad.top + chartH);
-  ctx.lineTo(xPos(0), pad.top + chartH);
-  ctx.closePath();
-  ctx.fill();
-
-  // Submitted line
-  ctx.strokeStyle = '#3b82f6';
-  ctx.lineWidth = 2.5;
-  ctx.lineJoin = 'round';
-  ctx.beginPath();
-  trends.submitted.forEach((v, i) => { i === 0 ? ctx.moveTo(xPos(i), yPos(v)) : ctx.lineTo(xPos(i), yPos(v)); });
-  ctx.stroke();
-
-  // Resolved area gradient
-  const gradGreen = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
-  gradGreen.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
-  gradGreen.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-  ctx.fillStyle = gradGreen;
-  ctx.beginPath();
-  ctx.moveTo(xPos(0), yPos(0));
-  trends.resolved.forEach((v, i) => ctx.lineTo(xPos(i), yPos(v)));
-  ctx.lineTo(xPos(trends.resolved.length - 1), pad.top + chartH);
-  ctx.lineTo(xPos(0), pad.top + chartH);
-  ctx.closePath();
-  ctx.fill();
-
-  // Resolved line
-  ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  trends.resolved.forEach((v, i) => { i === 0 ? ctx.moveTo(xPos(i), yPos(v)) : ctx.lineTo(xPos(i), yPos(v)); });
-  ctx.stroke();
-
-  // Data points
-  trends.submitted.forEach((v, i) => {
-    ctx.fillStyle = '#3b82f6';
-    ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2); ctx.fill();
-  });
-  trends.resolved.forEach((v, i) => {
-    ctx.fillStyle = '#10b981';
-    ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2); ctx.fill();
-  });
+  // Draw Bars
+  for (let i = 0; i < trends.labels.length; i++) {
+    const subV = trends.submitted[i];
+    const resV = trends.resolved[i];
+    
+    // Submitted Bar
+    if (subV > 0) {
+      const hSub = (subV / maxVal) * chartH;
+      ctx.fillStyle = '#3b82f6';
+      ctx.fillRect(xPos(i) - barWidth - 1, pad.top + chartH - hSub, barWidth, hSub);
+    }
+    
+    // Resolved Bar
+    if (resV > 0) {
+      const hRes = (resV / maxVal) * chartH;
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(xPos(i) + 1, pad.top + chartH - hRes, barWidth, hRes);
+    }
+  }
 
   // Legend
   ctx.textAlign = 'left';
