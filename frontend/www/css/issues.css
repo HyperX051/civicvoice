@@ -402,7 +402,7 @@
   min-width: 140px;
   padding: 8px 36px 8px 12px;
   font-size: var(--font-sm);
-  background: var(--bg-secondary);
+  background-color: var(--bg-secondary);
   border-color: var(--border-subtle);
 }
 .issue-filters select:focus {

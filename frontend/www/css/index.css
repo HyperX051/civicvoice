@@ -200,7 +200,7 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
   border-color: var(--text-primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-  background: var(--bg-secondary);
+  background-color: var(--bg-secondary);
 }
 
 textarea { resize: vertical; min-height: 100px; }
