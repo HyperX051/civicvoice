@@ -242,7 +242,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
 
   const citizenNav = `
     <div class="nav-section-title">Citizen</div>
-    <div class="nav-item ${pageTitle === 'Home' || pageTitle === 'Dashboard' ? 'active' : ''}" data-nav="${role === 'ADMIN' || role === 'AUTHORITY' ? '/dashboard' : '/issues'}">
+    <div class="nav-item" data-nav="/">
       ${icons.home}<span>Home</span>
     </div>
     <div class="nav-item ${pageTitle === 'Issues' ? 'active' : ''}" data-nav="/issues">
@@ -287,10 +287,10 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
     <div class="app-layout">
       <div class="sidebar-overlay" id="sidebar-overlay"></div>
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
+        <a href="#/" class="sidebar-header" style="text-decoration: none; color: inherit;">
           <div class="sidebar-logo"><img src="img/logo.png" style="width: 32px; height: 32px; border-radius: 8px;" alt="Logo" /></div>
           <span class="sidebar-brand">CivicVoice</span>
-        </div>
+        </a>
         <nav class="sidebar-nav">
           ${citizenNav}
           ${(role === 'AUTHORITY' || role === 'ADMIN') ? authorityNav : ''}
