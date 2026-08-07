@@ -432,9 +432,9 @@
 }
 .view-toggle-btn:hover { color: var(--text-secondary); background: var(--bg-card); }
 .view-toggle-btn.active {
-  background: var(--accent-brand);
-  color: white;
-  box-shadow: 0 1px 4px rgba(79,109,245,0.3);
+  background: var(--border-subtle);
+  color: var(--text-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 .view-toggle-btn svg { width: 14px; height: 14px; }
 

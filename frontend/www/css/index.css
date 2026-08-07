@@ -734,7 +734,7 @@ thead th {
   text-align: left;
   font-size: var(--font-sm);
   font-weight: 700;
-  color: var(--accent-brand);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1.5px solid var(--border-subtle);
