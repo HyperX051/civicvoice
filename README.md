@@ -2,6 +2,8 @@
 
 CivicVoice is a community engagement platform featuring a mobile-friendly frontend and a robust Java Spring Boot backend.
 
+**🚀 Live Application:** [https://civicvoice-ten.vercel.app](https://civicvoice-ten.vercel.app)
+
 ## Architecture
 
 This repository uses a monorepo structure:
