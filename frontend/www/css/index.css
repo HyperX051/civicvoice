@@ -7,18 +7,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* ─── Core Palette: Neo-Brutalist Light Mode ─── */
+  /* ─── Core Palette: Warm Beige Theme ─── */
   --bg-primary:       #FFFFEB;
-  --bg-secondary:     #000000;
-  --bg-card:          #000000;
-  --bg-card-hover:    #111111;
-  --bg-input:         #111111;
-  --bg-surface:       rgba(0, 0, 0, 0.92);
-  --bg-glass:         rgba(0, 0, 0, 0.80);
+  --bg-secondary:     #F5F5E6;
+  --bg-card:          #F5F5E6;
+  --bg-card-hover:    #EBEBD8;
+  --bg-input:         #EBEBD8;
+  --bg-surface:       rgba(245, 245, 230, 0.92);
+  --bg-glass:         rgba(245, 245, 230, 0.80);
 
-  --border-primary:   rgba(0, 0, 0, 0.8);
-  --border-subtle:    rgba(0, 0, 0, 0.2);
-  --border-hover:     #000000;
+  --border-primary:   rgba(0, 0, 0, 0.15);
+  --border-subtle:    rgba(0, 0, 0, 0.08);
+  --border-hover:     rgba(0, 0, 0, 0.25);
 
   --text-primary:     #000000;
   --text-secondary:   #000000;
@@ -105,14 +105,7 @@
   --topbar-height:      64px;
 }
 
-/* ─── Global Card Text Inversion (Neo-Brutalist Light Mode) ─── */
-:root .stat-card, :root .chart-card, :root .issue-card, :root .timeline-card, :root .sidebar, :root .map-container, :root .modal-content, :root tbody, :root .tabs, :root .card {
-  --text-primary:     #ffffff;
-  --text-secondary:   #cccccc;
-  --text-muted:       #999999;
-  --border-subtle:    rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
-}
+
 
 /* ─── Dark Mode: Sleek Black ─── */
 [data-theme="dark"] {
