@@ -1302,9 +1302,9 @@ export function renderIssueDetailContent(el, router, issueId) {
                 url = API_BASE_URL.replace('/api/v1', '') + url;
             }
             if (url.toLowerCase().includes('.mp4')) {
-              return `<video src="${url}" controls style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 1.5px solid var(--border-subtle);"></video>`;
+              return `<video src="${url}" controls style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 1.5px solid var(--border-subtle);" onerror="this.style.display='none';"></video>`;
             }
-            return `<img src="${url}" class="issue-media-item" data-index="${idx}" style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid var(--border-subtle); transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" alt="Issue media" onclick="window.openLightbox('${url}')" />`;
+            return `<img src="${url}" class="issue-media-item" data-index="${idx}" style="width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); cursor: pointer; border: 1.5px solid var(--border-subtle); transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" alt="Issue media" onerror="this.style.display='none';" onclick="window.openLightbox('${url}')" />`;
           }).join('')}
         </div>
       ` : '';
