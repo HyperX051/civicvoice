@@ -2,7 +2,7 @@
 // API Client
 // ============================================
 
-export const API_BASE_URL = 'https://civicvoice-backend.onrender.com/api/v1';
+export const API_BASE_URL = 'https://civicvoice-backend-p3oc.onrender.com/api/v1';
 
 export async function fetchWithAuth(endpoint, options = {}) {
     const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
