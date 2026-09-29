@@ -20,7 +20,7 @@ export async function fetchWithAuth(endpoint, options = {}) {
         headers,
     });
 
-    if (response.status === 401 || response.status === 403) {
+    if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/')) {
         // Token is likely expired or invalid
         localStorage.removeItem('civicvoice_auth');
         localStorage.removeItem('civicvoice_user');
@@ -41,7 +41,7 @@ export async function fetchWithAuth(endpoint, options = {}) {
         } catch(e) {
             errorData = { message: 'An error occurred reading the error response.' };
         }
-        throw new Error(errorData.message || errorData.error || response.statusText);
+        throw new Error(errorData.detail || errorData.message || errorData.error || response.statusText);
     }
 
     const text = await response.text();
