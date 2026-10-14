@@ -38,6 +38,7 @@ export class Router {
       if (match) {
         this.currentRoute = route;
         route.handler(match.params);
+        window.dispatchEvent(new CustomEvent('civicvoice:route-resolved', { detail: { path: route.path, hash } }));
         return;
       }
     }

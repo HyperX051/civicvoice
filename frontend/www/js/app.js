@@ -22,6 +22,7 @@ import {
   renderProfileContent,
 } from './pages.js';
 import { renderLandingPage } from './landing.js';
+import { initTranslator } from './translator.js';
 
 // Initialize auth
 auth.init();
@@ -31,6 +32,9 @@ const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.setAttribute('data-theme', 'dark');
 }
+
+// Initialize multilingual translator
+initTranslator();
 
 // Initialize location service (non-blocking — starts requesting permission in background)
 locationService.init().catch(() => {});

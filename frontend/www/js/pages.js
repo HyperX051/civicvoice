@@ -11,6 +11,7 @@ import {
 } from './utils.js';
 import { fetchWithAuth, API_BASE_URL } from './api.js';
 import { locationService } from './location.js';
+import { getLanguageSelectorHTML, attachLanguageSelectorEvents } from './translator.js';
 
 window.openLightbox = function(url) {
   const existing = document.getElementById('media-lightbox');
@@ -114,6 +115,9 @@ export function renderLoginPage(app, router, defaultEmail = '') {
     app.innerHTML = `
       <div class="auth-page">
         <div class="auth-container">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+            ${getLanguageSelectorHTML({ compact: true })}
+          </div>
           <div class="auth-logo">
             <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
             <h1>CivicVoice</h1>
@@ -191,6 +195,7 @@ export function renderLoginPage(app, router, defaultEmail = '') {
     }
   });
 
+  attachLanguageSelectorEvents(app);
   };
   render();
 }
@@ -203,6 +208,9 @@ export function renderRegisterPage(app, router) {
   app.innerHTML = `
     <div class="auth-page">
       <div class="auth-container">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+          ${getLanguageSelectorHTML({ compact: true })}
+        </div>
         <div class="auth-logo">
           <img src="img/logo.png" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px;" alt="CivicVoice Logo" />
           <h1>CivicVoice</h1>
@@ -254,6 +262,8 @@ export function renderRegisterPage(app, router) {
       submitBtn.textContent = 'Create Account';
     }
   });
+
+  attachLanguageSelectorEvents(app);
 }
 
 
@@ -334,6 +344,9 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
               <div class="sidebar-user-role">${capitalize(user?.role || 'Guest')}</div>
             </div>
           </div>
+          <div style="padding: 6px 12px 2px 12px;">
+            ${getLanguageSelectorHTML({ compact: true, extraClass: 'sidebar-lang-selector' })}
+          </div>
           <div class="nav-item" id="theme-toggle-btn" style="margin-top: 4px; color: var(--text-secondary); cursor: pointer;">
             🌙<span>Toggle Theme</span>
           </div>
@@ -354,6 +367,7 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
               ${icons.search}
               <input type="text" placeholder="Search..." id="topbar-search-input" />
             </div>
+            ${getLanguageSelectorHTML({ extraClass: 'topbar-lang-selector' })}
             <div class="notification-bell" id="notification-bell-btn">
               ${icons.bell}
               ${unread > 0 ? `<span class="notification-count">${unread}</span>` : ''}
@@ -382,6 +396,8 @@ export function renderLayout(app, router, pageTitle, contentRenderer) {
   const contentEl = document.getElementById('page-content');
   contentRenderer(contentEl, router);
 
+  // Attach language selector events
+  attachLanguageSelectorEvents(app);
 
   document.getElementById('sidebar-user-btn')?.addEventListener('click', () => {
     if (user) router.navigate('/profile');

@@ -1,5 +1,6 @@
 import { icons } from './icons.js';
 import { auth } from './auth.js';
+import { getLanguageSelectorHTML, attachLanguageSelectorEvents } from './translator.js';
 
 export function renderLandingPage(container, router) {
   // Update document title
@@ -16,7 +17,8 @@ export function renderLandingPage(container, router) {
           <img src="img/logo.png" style="width: 24px; height: 24px; border-radius: 6px;" alt="Logo" />
           CivicVoice
         </a>
-        <div class="landing-nav-actions">
+        <div class="landing-nav-actions" style="display: flex; align-items: center; gap: 10px;">
+          ${getLanguageSelectorHTML({ compact: true })}
           ${isAuthenticated 
             ? `<a href="#${dashboardPath}" class="btn-nav btn-nav-primary">Go to Dashboard</a>`
             : `<a href="#/login" class="btn-nav btn-nav-login">Sign In</a>
@@ -154,6 +156,9 @@ export function renderLandingPage(container, router) {
       </section>
     </div>
   `;
+
+  // Attach language selector events
+  attachLanguageSelectorEvents(container);
 
   // Attach 3D scroll effect
   const preview = document.getElementById('app-preview');
