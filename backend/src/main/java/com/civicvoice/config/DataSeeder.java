@@ -26,8 +26,16 @@ public class DataSeeder implements CommandLineRunner {
     private void seedUser(String email, String name, Role role) {
         userRepository.findByEmail(email).ifPresentOrElse(
             user -> {
+                boolean changed = false;
                 if (user.getRole() != role) {
                     user.setRole(role);
+                    changed = true;
+                }
+                if (user.getCity() == null || user.getCity().isBlank()) {
+                    user.setCity("Chennai");
+                    changed = true;
+                }
+                if (changed) {
                     userRepository.save(user);
                 }
             },
@@ -37,6 +45,7 @@ public class DataSeeder implements CommandLineRunner {
                         .fullName(name)
                         .passwordHash(passwordEncoder.encode("password"))
                         .role(role)
+                        .city("Chennai")
                         .isActive(true)
                         .isVerified(true)
                         .build();

@@ -229,8 +229,13 @@ export function renderRegisterPage(app, router) {
               <input type="email" id="reg-email" placeholder="you@example.com" required />
             </div>
             <div class="form-group">
+              <label for="reg-city">Your City</label>
+              <input type="text" id="reg-city" placeholder="e.g. Chennai, Bangalore, Mumbai" value="${locationService.city || 'Chennai'}" required />
+              <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Civic issues in your feed will be scoped to this city.</span>
+            </div>
+            <div class="form-group">
               <label for="reg-password">Password</label>
-              <input type="password" id="reg-password" placeholder="Create a password" required minlength="6" />
+              <input type="password" id="reg-password" placeholder="Create a password (min 8 chars)" required minlength="8" />
             </div>
             <button type="submit" class="btn btn-primary" id="register-submit-btn">Create Account</button>
           </form>
@@ -247,10 +252,11 @@ export function renderRegisterPage(app, router) {
     const submitBtn = document.getElementById('register-submit-btn');
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim();
+    const city = document.getElementById('reg-city').value.trim() || 'Chennai';
     const password = document.getElementById('reg-password').value;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Creating account...';
-    const result = await auth.register(name, email, password);
+    const result = await auth.register(name, email, password, city);
     if (result.success) {
       showToast('Account created successfully!', 'success');
       router.navigate('/issues');
@@ -595,6 +601,7 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
   let viewMode = 'grid';
   let filterStatus = '';
   let filterCategory = '';
+  let selectedCity = auth.getCity();
   let issues = [];
   let loading = true;
 
@@ -605,6 +612,9 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
       const params = new URLSearchParams();
       if (filterStatus) params.set('status', filterStatus);
       if (filterCategory) params.set('category', filterCategory);
+      if (!showMyIssues && selectedCity) {
+        params.set('city', selectedCity);
+      }
       params.set('size', '50');
       
       const endpoint = showMyIssues ? '/issues/my' : '/issues';
@@ -623,8 +633,16 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
     el.innerHTML = `
       <div class="page-header">
         <div>
-          <h1>${showMyIssues ? 'My Issues' : 'Community Issues'}</h1>
-          <p>${showMyIssues ? 'Track the issues you have reported' : 'Report, track, and upvote civic issues in your area'}</p>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <h1 style="margin: 0;">${showMyIssues ? 'My Issues' : 'Community Issues'}</h1>
+            ${!showMyIssues ? `
+              <div class="city-selector-badge" id="change-city-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.25); border-radius: 20px; font-size: 13px; font-weight: 600; color: var(--accent-blue); cursor: pointer;" title="Showing issues in your city. Click to switch.">
+                <span>📍 ${selectedCity}</span>
+                <span style="font-size: 10px; opacity: 0.7;">▼</span>
+              </div>
+            ` : ''}
+          </div>
+          <p>${showMyIssues ? 'Track the issues you have reported' : `Showing civic grievances for citizens in <strong>${selectedCity}</strong>`}</p>
         </div>
         <div class="page-actions">
           <div class="view-toggle">
@@ -669,7 +687,7 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
         <span class="text-sm text-muted" style="margin-left: auto; align-self: center;">${issues.length} found</span>
       </div>
 
-      ${viewMode === 'grid' ? (loading ? '<div class="empty-state"><div class="spinner"></div><h3>Loading issues...</h3></div>' : renderIssueCards(issues)) : renderMapView()}
+      ${viewMode === 'grid' ? (loading ? '<div class="empty-state"><div class="spinner"></div><h3>Loading issues...</h3></div>' : renderIssueCards(issues, selectedCity)) : renderMapView()}
     `;
 
     if (viewMode === 'map') {
@@ -677,6 +695,17 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
     }
 
     // Bind events
+    document.getElementById('change-city-btn')?.addEventListener('click', () => {
+      const current = selectedCity;
+      const newCity = prompt(`Currently viewing issues in: ${current}\n\nEnter city name to switch view (e.g. Chennai, Bangalore, Mumbai):`, current);
+      if (newCity !== null && newCity.trim() !== '' && newCity.trim() !== current) {
+        selectedCity = newCity.trim();
+        auth.setCity(selectedCity);
+        loadIssues();
+      }
+    });
+
+    document.getElementById('empty-report-btn')?.addEventListener('click', () => showReportIssueModal(loadIssues));
     document.getElementById('view-grid')?.addEventListener('click', () => { viewMode = 'grid'; render(); });
     document.getElementById('view-map')?.addEventListener('click', () => { viewMode = 'map'; render(); });
     
@@ -730,9 +759,16 @@ export function renderIssuesContent(el, router, showMyIssues = false) {
   loadIssues();
 }
 
-function renderIssueCards(issues) {
+function renderIssueCards(issues, currentCity = '') {
   if (!issues.length) {
-    return `<div class="empty-state">${icons.issues}<h3>No issues found</h3><p>Try adjusting your filters or report a new issue.</p></div>`;
+    return `
+      <div class="empty-state">
+        ${icons.issues}
+        <h3>No issues found${currentCity ? ` in ${currentCity}` : ''}</h3>
+        <p>There are no active civic grievances reported in ${currentCity || 'this area'}. Be the first citizen to report an issue or switch your city above!</p>
+        <button class="btn btn-primary" id="empty-report-btn" style="margin-top: 14px;">${icons.plus} Report an Issue</button>
+      </div>
+    `;
   }
   return `
     <div class="issues-grid">
@@ -888,7 +924,7 @@ function showReportIssueModal(onSuccess) {
           <div class="form-row">
             <div class="form-group">
               <label for="issue-city">City</label>
-              <input type="text" id="issue-city" value="Bangalore" />
+              <input type="text" id="issue-city" value="${auth.getCity() || 'Chennai'}" />
             </div>
             <div class="form-group">
               <label for="issue-pincode">PIN Code</label>
@@ -944,8 +980,8 @@ function showReportIssueModal(onSuccess) {
         statusEl.style.display = 'block';
         statusEl.innerHTML = `<span style="color: var(--success);">✅ Location auto-detected</span>${storedLoc.displayLabel ? ` — <strong>${storedLoc.displayLabel}</strong>` : ''}`;
       }
-      // Pre-fill city/area from stored geocode
-      if (storedLoc.city) document.getElementById('issue-city').value = storedLoc.city;
+      // Pre-fill city/area from stored geocode or user session
+      document.getElementById('issue-city').value = storedLoc.city || auth.getCity() || 'Chennai';
       if (storedLoc.area) {
         document.getElementById('issue-ward').value = storedLoc.area;
         document.getElementById('issue-address').value = storedLoc.area;
@@ -1168,7 +1204,7 @@ function showReportIssueModal(onSuccess) {
       longitude: capturedLng ?? 77.5946,
       address: document.getElementById('issue-address').value,
       ward: document.getElementById('issue-ward').value,
-      city: document.getElementById('issue-city').value || 'Bangalore',
+      city: document.getElementById('issue-city').value || auth.getCity() || 'Chennai',
       state: 'Karnataka',
       pinCode: document.getElementById('issue-pincode').value,
       anonymous: document.getElementById('issue-anonymous').checked,
@@ -2782,6 +2818,16 @@ export function renderProfileContent(el, router) {
           <div class="profile-menu-arrow">${icons.chevronRight}</div>
         </div>
 
+        <!-- Row: Edit City -->
+        <div class="profile-menu-item" id="edit-city-row" style="border-bottom: 1px solid var(--border-subtle); padding: 16px;">
+          <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.mapPin}</div>
+          <div class="profile-menu-text" style="flex-direction: column; align-items: flex-start; gap: 2px; flex: 1;">
+            <div style="font-size: 15px; font-weight: 500;">City / Region</div>
+            <div style="font-size: 13px; color: var(--accent-blue); font-weight: 600;" id="display-city">${auth.getCity()}</div>
+          </div>
+          <div class="profile-menu-arrow">${icons.chevronRight}</div>
+        </div>
+
         <!-- Row: Email -->
         <div class="profile-menu-item" style="border-bottom: 1px solid var(--border-subtle); cursor: default; padding: 16px;">
           <div class="profile-menu-icon" style="margin-right: 16px; color: var(--text-muted);">${icons.mail}</div>
@@ -2822,7 +2868,8 @@ export function renderProfileContent(el, router) {
       const payload = {
         name: auth.user?.name || '',
         about: auth.user?.about || '',
-        avatarUrl: auth.user?.avatarUrl || ''
+        avatarUrl: auth.user?.avatarUrl || '',
+        city: auth.getCity()
       };
       
       payload[field] = newValue;
@@ -2834,13 +2881,16 @@ export function renderProfileContent(el, router) {
 
       // Update local state and auth cache
       auth.user = {
+        ...auth.user,
         ...updatedUser,
-        name: updatedUser.name
+        name: updatedUser.name,
+        city: updatedUser.city || payload.city
       };
       
       const authData = JSON.parse(localStorage.getItem('civicvoice_auth') || '{}');
       authData.user = auth.user;
       localStorage.setItem('civicvoice_auth', JSON.stringify(authData));
+      localStorage.setItem('civicvoice_active_city', auth.user.city);
       
       return true;
     } catch (err) {
@@ -2940,13 +2990,39 @@ export function renderProfileContent(el, router) {
     }
   });
 
+  // Edit City
+  const editCityRow = document.getElementById('edit-city-row');
+  editCityRow?.addEventListener('click', () => {
+    const currentCity = auth.getCity();
+    const newCity = prompt('Enter your city / region (e.g. Chennai, Bangalore, Mumbai):', currentCity);
+    if (newCity !== null && newCity.trim() !== '' && newCity.trim() !== currentCity) {
+      const cityText = document.getElementById('display-city');
+      const originalText = cityText.textContent;
+      cityText.textContent = 'Saving...';
+      cityText.style.color = 'var(--text-muted)';
+      
+      updateProfileField('city', newCity.trim()).then(success => {
+        if (success) {
+          auth.setCity(newCity.trim());
+          cityText.textContent = newCity.trim();
+          showToast('City updated to ' + newCity.trim(), 'success');
+        } else {
+          cityText.textContent = originalText;
+        }
+        cityText.style.color = 'var(--accent-blue)';
+      });
+    }
+  });
+
   // Hover effects via JS since inline styles are tricky with pseudoclasses
   const addHoverEffect = (element) => {
+    if (!element) return;
     element.addEventListener('mouseenter', () => element.style.background = 'var(--bg-tertiary)');
     element.addEventListener('mouseleave', () => element.style.background = 'transparent');
   };
   addHoverEffect(editNameRow);
   addHoverEffect(editAboutRow);
+  addHoverEffect(editCityRow);
   
   avatarContainer.addEventListener('mouseenter', () => avatarContainer.style.transform = 'scale(1.02)');
   avatarContainer.addEventListener('mouseleave', () => avatarContainer.style.transform = 'scale(1)');

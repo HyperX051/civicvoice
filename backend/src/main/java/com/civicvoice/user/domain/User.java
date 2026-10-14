@@ -43,6 +43,8 @@ public class User extends BaseEntity implements UserDetails {
 
     private String ward;
 
+    private String city;
+
     private String about;
 
     @Column(name = "avatar_url")

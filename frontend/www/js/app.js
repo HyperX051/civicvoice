@@ -97,7 +97,7 @@ router.on('/register', () => {
 
 // ─── Citizen Routes ───
 router.on('/issues', () => {
-  renderLayout(app, router, 'Issues', renderIssuesContent);
+  requireAuth('Issues', renderIssuesContent, ['CITIZEN', 'AUTHORITY', 'ADMIN']);
 });
 
 router.on('/issues/my', () => {
@@ -105,7 +105,7 @@ router.on('/issues/my', () => {
 });
 
 router.on('/issues/:id', (params) => {
-  renderLayout(app, router, 'Issue Detail', (el, r) => renderIssueDetailContent(el, r, params.id));
+  requireAuth('Issue Detail', (el, r) => renderIssueDetailContent(el, r, params.id), ['CITIZEN', 'AUTHORITY', 'ADMIN']);
 });
 
 router.on('/polls', () => {

@@ -11,7 +11,8 @@ public record UserResponse(
     OffsetDateTime createdAt,
     boolean isActive,
     String about,
-    String avatarUrl
+    String avatarUrl,
+    String city
 ) {
     public static UserResponse from(com.civicvoice.user.domain.User user) {
         return new UserResponse(
@@ -22,7 +23,8 @@ public record UserResponse(
             user.getCreatedAt(),
             user.isActive(),
             user.getAbout(),
-            user.getAvatarUrl()
+            user.getAvatarUrl(),
+            user.getCity() != null ? user.getCity() : "Chennai"
         );
     }
 }

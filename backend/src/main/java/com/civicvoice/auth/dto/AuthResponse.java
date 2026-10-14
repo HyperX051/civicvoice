@@ -21,6 +21,7 @@ public sealed interface AuthResponse permits AuthResponse.TokenPair, AuthRespons
         String department,
         String ward,
         String about,
-        String avatarUrl
+        String avatarUrl,
+        String city
     ) implements AuthResponse {}
 }

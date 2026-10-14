@@ -39,6 +39,16 @@ public class UserController {
         return users.map(UserResponse::from);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        }
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(UserResponse.from(user));
+    }
+
     @PutMapping("/me")
     public ResponseEntity<UserResponse> updateProfile(
             @Valid @RequestBody UserProfileUpdateRequest request,
@@ -49,6 +59,9 @@ public class UserController {
         user.setFullName(request.name());
         user.setAbout(request.about());
         user.setAvatarUrl(request.avatarUrl());
+        if (request.city() != null && !request.city().isBlank()) {
+            user.setCity(request.city().trim());
+        }
         
         User updatedUser = userRepository.save(user);
         return ResponseEntity.ok(UserResponse.from(updatedUser));

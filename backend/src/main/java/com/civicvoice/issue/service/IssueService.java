@@ -159,8 +159,10 @@ public class IssueService {
         User current = currentUserOrNull();
 
         Specification<Issue> spec = Specification.where(null);
-        if (city != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("city"), city));
+        if (city != null && !city.isBlank()) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("city")), city.trim().toLowerCase()));
+        } else if (current != null && current.getCity() != null && !current.getCity().isBlank() && current.getRole() == com.civicvoice.user.domain.Role.CITIZEN) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("city")), current.getCity().trim().toLowerCase()));
         }
         if (status != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
@@ -168,8 +170,8 @@ public class IssueService {
         if (category != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("category"), category));
         }
-        if (ward != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("ward"), ward));
+        if (ward != null && !ward.isBlank()) {
+            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("ward")), ward.trim().toLowerCase()));
         }
 
         Page<Issue> issues = issueRepository.findAll(spec, pageable);

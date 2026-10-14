@@ -12,5 +12,8 @@ public record UserProfileUpdateRequest(
     String about,
     
     @Size(max = 255)
-    String avatarUrl
+    String avatarUrl,
+
+    @Size(max = 100)
+    String city
 ) {}

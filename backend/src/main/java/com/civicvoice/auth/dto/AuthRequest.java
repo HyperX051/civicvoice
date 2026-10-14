@@ -11,7 +11,8 @@ public sealed interface AuthRequest permits AuthRequest.Register, AuthRequest.Lo
         @NotBlank @Email String email,
         @NotBlank @Size(min = 8, max = 128) String password,
         @NotBlank String fullName,
-        String phone
+        String phone,
+        String city
     ) implements AuthRequest {}
 
     record Login(
@@ -25,7 +26,8 @@ public sealed interface AuthRequest permits AuthRequest.Register, AuthRequest.Lo
         @NotBlank String fullName,
         String phone,
         @NotBlank String department,
-        @NotBlank String ward
+        @NotBlank String ward,
+        String city
     ) implements AuthRequest {}
 
     record NgoRegister(
@@ -34,7 +36,8 @@ public sealed interface AuthRequest permits AuthRequest.Register, AuthRequest.Lo
         @NotBlank String fullName,
         String phone,
         @NotBlank String department, // Reusing department to store NGO details/organization
-        @NotBlank String ward
+        @NotBlank String ward,
+        String city
     ) implements AuthRequest {}
 
     record RefreshToken(

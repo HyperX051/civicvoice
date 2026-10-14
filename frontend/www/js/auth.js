@@ -27,32 +27,36 @@ export const auth = {
         method: 'POST',
         body: JSON.stringify({ email, password })
       });
-      // Backend returns accessToken, user.fullName, user.role
+      // Backend returns accessToken, user.fullName, user.role, user.city
       this.token = data.accessToken;
       this.user = {
         ...data.user,
         name: data.user.fullName,  // normalize for UI
+        city: data.user.city || 'Chennai',
       };
       localStorage.setItem(AUTH_KEY, JSON.stringify({ user: this.user, token: this.token }));
+      localStorage.setItem('civicvoice_active_city', this.user.city);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
     }
   },
 
-  async register(name, email, password) {
+  async register(name, email, password, city = 'Chennai') {
     try {
       const data = await fetchWithAuth('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ fullName: name, email, password })
+        body: JSON.stringify({ fullName: name, email, password, city: city || 'Chennai' })
       });
-      // Backend returns accessToken, user.fullName, user.role
+      // Backend returns accessToken, user.fullName, user.role, user.city
       this.token = data.accessToken;
       this.user = {
         ...data.user,
         name: data.user.fullName,  // normalize for UI
+        city: data.user.city || city || 'Chennai',
       };
       localStorage.setItem(AUTH_KEY, JSON.stringify({ user: this.user, token: this.token }));
+      localStorage.setItem('civicvoice_active_city', this.user.city);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
@@ -85,5 +89,17 @@ export const auth = {
 
   getAuthHeader() {
     return this.token ? `Bearer ${this.token}` : '';
+  },
+
+  getCity() {
+    return this.user?.city || localStorage.getItem('civicvoice_active_city') || 'Chennai';
+  },
+
+  setCity(city) {
+    if (this.user) {
+      this.user.city = city;
+      localStorage.setItem(AUTH_KEY, JSON.stringify({ user: this.user, token: this.token }));
+    }
+    localStorage.setItem('civicvoice_active_city', city);
   },
 };

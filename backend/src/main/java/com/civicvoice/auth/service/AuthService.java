@@ -37,6 +37,7 @@ public class AuthService {
             .passwordHash(passwordEncoder.encode(request.password()))
             .fullName(request.fullName())
             .phone(request.phone())
+            .city(request.city() != null && !request.city().isBlank() ? request.city() : "Chennai")
             .role(Role.CITIZEN)
             .isActive(true)
             .isVerified(false)
@@ -61,6 +62,7 @@ public class AuthService {
             .role(Role.AUTHORITY)
             .department(request.department())
             .ward(request.ward())
+            .city(request.city() != null && !request.city().isBlank() ? request.city() : "Chennai")
             .isActive(true)
             .isVerified(true)
             .build();
@@ -84,6 +86,7 @@ public class AuthService {
             .role(Role.NGO)
             .department(request.department())
             .ward(request.ward())
+            .city(request.city() != null && !request.city().isBlank() ? request.city() : "Chennai")
             .isActive(true)
             .isVerified(true)
             .build();
@@ -137,7 +140,8 @@ public class AuthService {
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
             user.getId(), user.getEmail(), user.getFullName(),
             user.getRole(), user.getDepartment(), user.getWard(),
-            user.getAbout(), user.getAvatarUrl()
+            user.getAbout(), user.getAvatarUrl(),
+            user.getCity() != null ? user.getCity() : "Chennai"
         );
 
         return new AuthResponse.TokenPair(
